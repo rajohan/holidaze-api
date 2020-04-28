@@ -15,7 +15,8 @@ const config = {
     allowedOrigins: [
         `http://localhost:${process.env.PORT || 8080}`,
         "http://localhost:3000",
-        "api-holidaze.herokuapp.com"
+        "api-holidaze.herokuapp.com",
+        "62.16.156.154"
     ]
 };
 
