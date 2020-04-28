@@ -1,0 +1,18 @@
+const config = {
+    isDevMode: process.env.NODE_ENV !== "production",
+    postgresUsername: process.env.postgresUsername || "postgres",
+    postgresPassword: process.env.postgresPassword || "test",
+    postgresDatabase: process.env.postgresDatabase || "holidaze",
+    postgresHost: process.env.postgresHost || "localhost",
+    postgresPort: process.env.postgresPort || 5432,
+    jwtSecret: process.env.jwtSecret || "testSecret",
+    jwtRefreshSecret: process.env.jwtRefreshSecret || "testSecret2",
+    jwtAudience: process.env.jwtAudience || "holidaze",
+    jwtIssuer: process.env.jwtIssuer || "api.holidaze",
+    jwtExpiresIn: Math.floor(Date.now() / 1000) + 60 * 15, // 15 min
+    jwtRefreshExpiresIn: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 30 days
+    port: process.env.PORT || 8080,
+    allowedOrigins: [`http://localhost:${process.env.PORT || 8080}`, "http://localhost:3000"]
+};
+
+export { config };
