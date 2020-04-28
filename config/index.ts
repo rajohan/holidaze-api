@@ -1,10 +1,18 @@
+let dbCredentials: string[] = [];
+
+if (process.env.DATABASE_URL) {
+    dbCredentials = process.env.DATABASE_URL.split(/^postgres:\/\/(.*?):(.*?)@(.*?):([1-9]+)\/(.*)$/).filter(
+        (elm) => elm.length > 0
+    );
+}
+
 const config = {
     isDevMode: process.env.NODE_ENV !== "production",
-    postgresUsername: process.env.postgresUsername || "postgres",
-    postgresPassword: process.env.postgresPassword || "test",
-    postgresDatabase: process.env.postgresDatabase || "rajohan",
-    postgresHost: process.env.postgresHost || "localhost",
-    postgresPort: (process.env.postgresPort as number | undefined) || 5432,
+    postgresUsername: dbCredentials[0] || "postgres",
+    postgresPassword: dbCredentials[1] || "test",
+    postgresDatabase: dbCredentials[4] || "rajohan",
+    postgresHost: dbCredentials[2] || "localhost",
+    postgresPort: parseInt(dbCredentials[3]) || 5432,
     jwtSecret: process.env.jwtSecret || "testSecret",
     jwtRefreshSecret: process.env.jwtRefreshSecret || "testSecret2",
     jwtAudience: process.env.jwtAudience || "holidaze",
