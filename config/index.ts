@@ -12,7 +12,7 @@ const config = {
     jwtExpiresIn: Math.floor(Date.now() / 1000) + 60 * 15, // 15 min
     jwtRefreshExpiresIn: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 30 days
     port: process.env.PORT || 8080,
-    allowedOrigins: [`http://localhost:${process.env.PORT || 8080}`, "http://localhost:3000"]
+    allowedOrigins: [`http://localhost:${process.env.PORT || 8080}`, "http://localhost:3000", "62.16.156.154"]
 };
 
 export { config };
