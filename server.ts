@@ -73,7 +73,8 @@ const startServer = async (): Promise<void> => {
             }
             return { req, user: null };
         },
-        playground: true //config.isDevMode
+        playground: true, //config.isDevMode
+        introspection: true //config.isDevMode
     });
 
     graphQlServer.applyMiddleware({
