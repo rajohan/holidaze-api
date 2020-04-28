@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import express, { NextFunction, Request, Response } from "express";
+import compression from "compression";
 import { ApolloServer } from "apollo-server-express";
 import cors from "cors";
 import jwt from "express-jwt";
@@ -25,6 +26,7 @@ const corsOptions = (origin: string | undefined, cb: (err: null, allow?: boolean
 const startServer = async (): Promise<void> => {
     const app = express();
 
+    app.use(compression());
     app.use(cors({ origin: corsOptions, credentials: true }));
 
     app.use(
