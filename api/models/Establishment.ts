@@ -37,7 +37,7 @@ class Establishment extends Model<Establishment> {
 
     @Length({ min: 5 })
     @IsUrl
-    @Column
+    @Column(DataType.TEXT)
     imageUrl!: string;
 
     @IsNumeric

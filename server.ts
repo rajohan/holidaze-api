@@ -13,6 +13,7 @@ import { EnquiryResolver } from "./api/resolvers/EnquiryResolver";
 import { UserResolver } from "./api/resolvers/UserResolver";
 import { EstablishmentResolver } from "./api/resolvers/EstablishmentResolver";
 import { User } from "./api/models/User";
+import { insertInitialData } from "./data/initialData";
 
 const corsOptions = (origin: string | undefined, cb: (err: null, allow?: boolean) => void): void => {
     if (origin && config.allowedOrigins.includes(origin)) {
@@ -95,7 +96,8 @@ const startServer = async (): Promise<void> => {
 
     // Synchronize models
     try {
-        await sequelize.sync();
+        await sequelize.sync({ force: true });
+        await insertInitialData();
     } catch (error) {
         console.error("Unable to synchronize models.", error);
     }
