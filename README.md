@@ -1,4 +1,4 @@
-#Holidaze GraphQL API Server
+# Holidaze GraphQL API Server
 
 ## Available Scripts
 
