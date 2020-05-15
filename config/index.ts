@@ -19,6 +19,7 @@ const config = {
     jwtIssuer: process.env.jwtIssuer || "api.holidaze",
     jwtExpiresIn: Math.floor(Date.now() / 1000) + 60 * 15, // 15 min
     jwtRefreshExpiresIn: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 30 days
+    jwtRefreshCookieMaxAge: 60 * 60 * 24 * 30 * 1000, // 30 days
     port: process.env.PORT || 8080,
     allowedOrigins: [
         `http://localhost:${process.env.PORT || 8080}`,

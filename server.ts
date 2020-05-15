@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import express, { NextFunction, Request, Response } from "express";
 import compression from "compression";
+import cookieParser from "cookie-parser";
 import { ApolloServer } from "apollo-server-express";
 import cors from "cors";
 import jwt from "express-jwt";
@@ -27,6 +28,7 @@ const startServer = async (): Promise<void> => {
     const app = express();
 
     app.use(compression());
+    app.use(cookieParser());
     app.use(cors({ origin: corsOptions, credentials: true }));
 
     app.use(
@@ -69,12 +71,15 @@ const startServer = async (): Promise<void> => {
     // Setup and initialize the graphQL server
     const graphQlServer = new ApolloServer({
         schema,
-        context: async ({ req }): Promise<{ req: Request; user: User | null }> => {
+        context: async ({ req, res }): Promise<{ req: Request; res: Response; user: User | null }> => {
             if (req.user && req.user.id) {
                 const user = await User.findOne({ where: { id: req.user.id } });
-                return { req, user: user };
+                return { req, res, user: user };
             }
-            return { req, user: null };
+            return { req, res, user: null };
+        },
+        formatError: (error): { message: string; statusCode: number } => {
+            return { message: error.message, statusCode: 400 };
         },
         playground: true, //config.isDevMode
         introspection: true //config.isDevMode

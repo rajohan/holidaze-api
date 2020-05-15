@@ -1,11 +1,11 @@
-import { Arg, Args, Query, Mutation, Resolver } from "type-graphql";
+import { Arg, Args, Query, Mutation, Resolver, Ctx } from "type-graphql";
 import jwt from "jsonwebtoken";
 
 import { generateAuthTokens } from "../../utils/generateAuthToken";
 import { User } from "../models/User";
 import { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs, RefreshTokenArgs } from "../inputs/UserInput";
-import { TokensType, UserType, UserTypeWithTokens } from "../typeDefs/UserType";
-import { LoginResponse, Tokens } from "../../types";
+import { TokensType, UserType, UserTypeWithToken } from "../typeDefs/UserType";
+import { GraphQLContext, LoginResponse } from "../../types";
 import { config } from "../../config";
 import { Token } from "../models/Token";
 
@@ -39,8 +39,8 @@ class UserResolver {
         return User.create({ username, password, email });
     }
 
-    @Mutation(() => UserTypeWithTokens, { description: "Login a user" })
-    async login(@Args() { username, password }: UserLoginArgs): Promise<LoginResponse> {
+    @Mutation(() => UserTypeWithToken, { description: "Login a user" })
+    async login(@Args() { username, password }: UserLoginArgs, @Ctx() ctx: GraphQLContext): Promise<LoginResponse> {
         const user = await User.findOne({ where: { username } });
 
         if (!user) {
@@ -55,7 +55,14 @@ class UserResolver {
 
         const { authToken, refreshToken } = await generateAuthTokens(user);
 
-        return { user, authToken, refreshToken };
+        ctx.res.cookie("authRefreshToken", refreshToken, {
+            maxAge: config.jwtRefreshCookieMaxAge,
+            httpOnly: true,
+            secure: !config.isDevMode,
+            sameSite: "strict"
+        });
+
+        return { user, authToken };
     }
 
     @Mutation(() => UserType, { description: "Changes a users password" })
@@ -69,8 +76,11 @@ class UserResolver {
         return user.update({ password: password });
     }
 
-    @Mutation(() => TokensType, { description: "Refreshes auth tokens" })
-    async refreshAuthTokens(@Args() { id, refreshToken }: RefreshTokenArgs): Promise<Tokens> {
+    @Mutation(() => TokensType, { description: "Refreshes auth token" })
+    async refreshAuthTokens(
+        @Args() { id, refreshToken }: RefreshTokenArgs,
+        @Ctx() ctx: GraphQLContext
+    ): Promise<{ authToken: string }> {
         const user = await User.findOne({ where: { id } });
 
         if (!user) {
@@ -94,7 +104,14 @@ class UserResolver {
 
         const newTokens = await generateAuthTokens(user);
 
-        return { authToken: newTokens.authToken, refreshToken: newTokens.refreshToken };
+        ctx.res.cookie("authRefreshToken", refreshToken, {
+            maxAge: config.jwtRefreshCookieMaxAge,
+            httpOnly: true,
+            secure: !config.isDevMode,
+            sameSite: "strict"
+        });
+
+        return { authToken: newTokens.authToken };
     }
 }
 
