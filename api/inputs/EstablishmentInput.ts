@@ -34,7 +34,7 @@ class NewEstablishmentInput implements Partial<EstablishmentType> {
 @InputType({ description: "New establishment data" })
 class UpdateEstablishmentInput implements Partial<EstablishmentType> {
     @Field(() => ID)
-    id!: number;
+    id!: string;
 
     @Field({ nullable: true })
     name?: string;
@@ -67,7 +67,7 @@ class UpdateEstablishmentInput implements Partial<EstablishmentType> {
 @ArgsType()
 class EstablishmentIdArg {
     @Field(() => ID)
-    id!: number;
+    id!: string;
 }
 
 @ArgsType()

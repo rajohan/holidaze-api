@@ -16,7 +16,7 @@ class NewContactInput implements Partial<ContactType> {
 @ArgsType()
 class ContactIdArg {
     @Field(() => ID)
-    id!: number;
+    id!: string;
 }
 
 export { NewContactInput, ContactIdArg };

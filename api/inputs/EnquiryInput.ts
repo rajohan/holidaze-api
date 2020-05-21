@@ -4,7 +4,7 @@ import { EnquiryType } from "../typeDefs/EnquiryType";
 @InputType({ description: "New enquiry data" })
 class NewEnquiryInput implements Partial<EnquiryType> {
     @Field(() => ID)
-    establishmentId!: number;
+    establishmentId!: string;
 
     @Field()
     clientName!: string;
@@ -22,7 +22,7 @@ class NewEnquiryInput implements Partial<EnquiryType> {
 @InputType({ description: "Update enquiry data" })
 class UpdateEnquiryInput implements Partial<EnquiryType> {
     @Field(() => ID)
-    id!: number;
+    id!: string;
 
     @Field({ nullable: true })
     clientName?: string;
@@ -37,7 +37,7 @@ class UpdateEnquiryInput implements Partial<EnquiryType> {
 @ArgsType()
 class EnquiryIdArg {
     @Field(() => ID)
-    id!: number;
+    id!: string;
 }
 
 @ArgsType()

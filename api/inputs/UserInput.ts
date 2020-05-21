@@ -16,7 +16,7 @@ class NewUserInput implements Partial<UserType> {
 @ArgsType()
 class UserIdArg {
     @Field(() => ID)
-    id!: number;
+    id!: string;
 }
 
 @ArgsType()
@@ -31,7 +31,7 @@ class UserLoginArgs {
 @ArgsType()
 class UserChangePasswordArgs {
     @Field(() => ID)
-    id!: number;
+    id!: string;
 
     @Field()
     password!: string;
@@ -40,7 +40,7 @@ class UserChangePasswordArgs {
 @ArgsType()
 class RefreshTokenArgs {
     @Field(() => ID)
-    id!: number;
+    id!: string;
 
     @Field()
     refreshToken!: string;

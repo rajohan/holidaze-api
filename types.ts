@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { User } from "./api/models/User";
 
 export type TokenPayload = {
-    id: number;
+    id: string;
     aud: string;
     iss: string;
     iat: number;

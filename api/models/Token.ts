@@ -3,7 +3,6 @@ import {
     Column,
     CreatedAt,
     Model,
-    IsInt,
     ForeignKey,
     UpdatedAt,
     DataType,
@@ -19,7 +18,6 @@ class Token extends Model<Token> {
     @Column({ type: DataType.UUID, primaryKey: true })
     id!: string;
 
-    @IsInt
     @ForeignKey(() => User)
     @Column(DataType.UUID)
     user!: string;

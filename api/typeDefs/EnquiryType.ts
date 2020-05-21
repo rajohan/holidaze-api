@@ -5,7 +5,7 @@ import { EstablishmentType } from "./EstablishmentType";
 @ObjectType({ description: "Object representing a enquiry" })
 class EnquiryType {
     @Field(() => ID)
-    id!: number;
+    id!: string;
 
     @Field()
     clientName!: string;
