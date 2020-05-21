@@ -13,7 +13,9 @@ import {
     IsFloat,
     HasMany,
     Scopes,
-    DefaultScope
+    DefaultScope,
+    Default,
+    Unique
 } from "sequelize-typescript";
 
 import { Enquiry } from "./Enquiry";
@@ -26,6 +28,11 @@ import { Enquiry } from "./Enquiry";
 }))
 @Table
 class Establishment extends Model<Establishment> {
+    @Unique
+    @Default(DataType.UUIDV4)
+    @Column({ type: DataType.UUID, primaryKey: true })
+    id!: string;
+
     @Length({ min: 2 })
     @Column
     name!: string;

@@ -11,11 +11,17 @@ import {
     IsAlphanumeric,
     Default,
     BeforeCreate,
-    BeforeUpdate
+    BeforeUpdate,
+    DataType
 } from "sequelize-typescript";
 
 @Table
 class User extends Model<User> {
+    @Unique
+    @Default(DataType.UUIDV4)
+    @Column({ type: DataType.UUID, primaryKey: true })
+    id!: string;
+
     @Unique
     @IsAlphanumeric
     @Length({ min: 3, max: 9 })

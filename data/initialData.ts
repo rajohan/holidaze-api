@@ -224,9 +224,9 @@ const establishments = [
     }
 ];
 
-const enquiries = [
+const enquiries = (establishment: { establishmentId: string }): [{}] => [
     {
-        establishmentId: 1,
+        establishmentId: establishment.establishmentId,
         clientName: "Mike Tindall",
         email: "miket@gmail.com",
         checkin: new Date(2019, 5, 3),
@@ -276,8 +276,8 @@ const users = async (): Promise<{}[]> => [
 const insertInitialData = async (): Promise<void> => {
     const userData = await users();
 
-    await Establishment.bulkCreate(establishments);
-    await Enquiry.bulkCreate(enquiries);
+    const createdEstablishments = await Establishment.bulkCreate(establishments);
+    await Enquiry.bulkCreate(enquiries({ establishmentId: createdEstablishments[0].getDataValue("id") }));
     await User.bulkCreate(userData);
     await Contact.bulkCreate(contact);
 

@@ -1,7 +1,23 @@
-import { Table, Column, CreatedAt, UpdatedAt, Model, DataType, IsEmail, Length } from "sequelize-typescript";
+import {
+    Table,
+    Column,
+    CreatedAt,
+    UpdatedAt,
+    Model,
+    DataType,
+    IsEmail,
+    Length,
+    Default,
+    Unique
+} from "sequelize-typescript";
 
 @Table
 class Contact extends Model<Contact> {
+    @Unique
+    @Default(DataType.UUIDV4)
+    @Column({ type: DataType.UUID, primaryKey: true })
+    id!: string;
+
     @Length({ min: 2 })
     @Column
     clientName!: string;

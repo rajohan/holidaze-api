@@ -7,11 +7,13 @@ import {
     IsEmail,
     Length,
     IsDate,
-    IsInt,
     ForeignKey,
     BelongsTo,
     Scopes,
-    DefaultScope
+    DefaultScope,
+    DataType,
+    Default,
+    Unique
 } from "sequelize-typescript";
 
 import { Establishment } from "./Establishment";
@@ -24,10 +26,14 @@ import { Establishment } from "./Establishment";
 }))
 @Table
 class Enquiry extends Model<Enquiry> {
-    @IsInt
+    @Unique
+    @Default(DataType.UUIDV4)
+    @Column({ type: DataType.UUID, primaryKey: true })
+    id!: string;
+
     @ForeignKey(() => Establishment)
-    @Column
-    establishmentId!: number;
+    @Column(DataType.UUID)
+    establishmentId!: string;
 
     @Length({ min: 2 })
     @Column
