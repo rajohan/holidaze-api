@@ -11,12 +11,12 @@ const generateAuthTokens = async (user: User): Promise<Tokens> => {
         aud: config.jwtAudience,
         iss: config.jwtIssuer,
         iat: Date.now() / 1000,
-        exp: config.jwtExpiresIn
+        exp: config.jwtExpiresIn()
     };
 
     const payloadRefreshToken: TokenPayload = {
         ...payloadAuthToken,
-        exp: config.jwtRefreshExpiresIn
+        exp: config.jwtRefreshExpiresIn()
     };
 
     const authToken = jwt.sign(payloadAuthToken, config.jwtSecret);

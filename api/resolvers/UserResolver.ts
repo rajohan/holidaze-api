@@ -23,6 +23,15 @@ class UserResolver {
         return user;
     }
 
+    @Query(() => UserType, { description: "Returns current signed in user" })
+    async getCurrentUser(@Ctx() ctx: GraphQLContext): Promise<User> {
+        if (!ctx.user) {
+            throw new Error(errorNames.NOT_FOUND);
+        }
+
+        return ctx.user;
+    }
+
     @Query(() => [UserType], { description: "Returns all users" })
     async getAllUsers(): Promise<User[]> {
         const users = await User.findAll({});
