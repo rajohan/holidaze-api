@@ -1,5 +1,6 @@
 import { Arg, Args, Query, Mutation, Resolver, Authorized } from "type-graphql";
 
+import { errorNames } from "../../utils/errors";
 import { Establishment } from "../models/Establishment";
 import { EstablishmentType } from "../typeDefs/EstablishmentType";
 import {
@@ -20,7 +21,7 @@ class EstablishmentResolver {
         const establishment = await Establishment.scope([scope]).findOne({ where: { id } });
 
         if (!establishment) {
-            throw new Error("Establishment not found");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return establishment;
@@ -32,7 +33,7 @@ class EstablishmentResolver {
         const establishments = await Establishment.scope([scope]).findAll({});
 
         if (!establishments) {
-            throw new Error("No establishments could be found");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return establishments;
@@ -63,7 +64,7 @@ class EstablishmentResolver {
         const establishment = await Establishment.findOne({ where: { id } });
 
         if (!establishment) {
-            throw new Error("Establishment does not exist");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return establishment.update({
@@ -85,7 +86,7 @@ class EstablishmentResolver {
         const establishment = await Establishment.findOne({ where: { id } });
 
         if (!establishment) {
-            throw new Error("Establishment does not exist");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         await establishment.destroy();

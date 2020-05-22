@@ -1,5 +1,6 @@
 import { Arg, Args, Query, Mutation, Resolver, Authorized } from "type-graphql";
 
+import { errorNames } from "../../utils/errors";
 import { Enquiry } from "../models/Enquiry";
 import { NewEnquiryInput, UpdateEnquiryInput, EnquiryIdArg, EnquiryWithEstablishmentArg } from "../inputs/EnquiryInput";
 import { EnquiryType } from "../typeDefs/EnquiryType";
@@ -15,7 +16,7 @@ class EnquiryResolver {
         const enquiry = await Enquiry.scope([scope]).findOne({ where: { id: id } });
 
         if (!enquiry) {
-            throw new Error("Enquiry not found");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return enquiry;
@@ -27,7 +28,7 @@ class EnquiryResolver {
         const enquiries = await Enquiry.scope([scope]).findAll({});
 
         if (!enquiries) {
-            throw new Error("No enquiries could be found");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return enquiries;
@@ -48,7 +49,7 @@ class EnquiryResolver {
         const enquiry = await Enquiry.findOne({ where: { id } });
 
         if (!enquiry) {
-            throw new Error("Enquiry does not exist");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return enquiry.update({ clientName, checkin, checkout });
@@ -60,7 +61,7 @@ class EnquiryResolver {
         const enquiry = await Enquiry.findOne({ where: { id } });
 
         if (!enquiry) {
-            throw new Error("Enquiry does not exist");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         await enquiry.destroy();

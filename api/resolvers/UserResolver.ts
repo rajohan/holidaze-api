@@ -8,6 +8,7 @@ import { TokensType, UserType, UserTypeWithToken } from "../typeDefs/UserType";
 import { GraphQLContext, LoginResponse } from "../../types";
 import { config } from "../../config";
 import { Token } from "../models/Token";
+import { errorNames } from "../../utils/errors";
 
 @Resolver(User)
 class UserResolver {
@@ -16,7 +17,7 @@ class UserResolver {
         const user = await User.findOne({ where: { id } });
 
         if (!user) {
-            throw new Error("User not found");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return user;
@@ -27,7 +28,7 @@ class UserResolver {
         const users = await User.findAll({});
 
         if (!users) {
-            throw new Error("No users could be found");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return users;
@@ -44,13 +45,13 @@ class UserResolver {
         const user = await User.findOne({ where: { username } });
 
         if (!user) {
-            throw new Error("Invalid credentials");
+            throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
         const passwordValid = await user.verifyPassword(password);
 
         if (!passwordValid) {
-            throw new Error("Invalid credentials");
+            throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
         const { authToken, refreshToken } = await generateAuthTokens(user);
@@ -70,7 +71,7 @@ class UserResolver {
         const user = await User.findOne({ where: { id } });
 
         if (!user) {
-            throw new Error("User does not exist");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return user.update({ password: password });
@@ -84,7 +85,7 @@ class UserResolver {
         const user = await User.findOne({ where: { id } });
 
         if (!user) {
-            throw new Error("User does not exist");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         try {
@@ -93,13 +94,13 @@ class UserResolver {
                 issuer: config.jwtIssuer
             });
         } catch (error) {
-            throw new Error("Invalid refresh token");
+            throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
         const validToken = await Token.findOne({ where: { user: id, token: refreshToken } });
 
         if (!validToken) {
-            throw new Error("Invalid refresh token");
+            throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
         const newTokens = await generateAuthTokens(user);

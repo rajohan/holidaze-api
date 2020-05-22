@@ -16,6 +16,7 @@ import { UserResolver } from "./api/resolvers/UserResolver";
 import { EstablishmentResolver } from "./api/resolvers/EstablishmentResolver";
 import { User } from "./api/models/User";
 import { insertInitialData } from "./data/initialData";
+import { errorNames, getError } from "./utils/errors";
 
 const corsOptions = (origin: string | undefined, cb: (err: null, allow?: boolean) => void): void => {
     if (origin && config.allowedOrigins.includes(origin)) {
@@ -79,6 +80,12 @@ const startServer = async (): Promise<void> => {
             return { req, res, user: null };
         },
         formatError: (error): { message: string; statusCode: number } => {
+            const errorType = getError(error.message as keyof typeof errorNames);
+
+            if (errorType) {
+                return { message: errorType.message, statusCode: errorType.statusCode };
+            }
+
             return { message: error.message, statusCode: 400 };
         },
         playground: true, //config.isDevMode

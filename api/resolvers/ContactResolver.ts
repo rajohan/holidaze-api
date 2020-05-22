@@ -1,5 +1,6 @@
 import { Arg, Args, Authorized, Mutation, Query, Resolver } from "type-graphql";
 
+import { errorNames } from "../../utils/errors";
 import { Contact } from "../models/Contact";
 import { NewContactInput, ContactIdArg } from "../inputs/ContactInput";
 import { ContactType } from "../typeDefs/ContactType";
@@ -12,7 +13,7 @@ class ContactResolver {
         const message = await Contact.findOne({ where: { id } });
 
         if (!message) {
-            throw new Error("Message not found");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return message;
@@ -24,7 +25,7 @@ class ContactResolver {
         const messages = await Contact.findAll({});
 
         if (!messages) {
-            throw new Error("No messages could be found");
+            throw new Error(errorNames.NOT_FOUND);
         }
 
         return messages;
