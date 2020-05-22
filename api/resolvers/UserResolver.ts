@@ -101,6 +101,7 @@ class UserResolver {
                 issuer: config.jwtIssuer
             });
         } catch (error) {
+            ctx.res.clearCookie("authRefreshToken", { httpOnly: true, secure: !config.isDevMode, sameSite: "strict" });
             throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
@@ -109,12 +110,14 @@ class UserResolver {
         const user = await User.findOne({ where: { id } });
 
         if (!user) {
+            ctx.res.clearCookie("authRefreshToken", { httpOnly: true, secure: !config.isDevMode, sameSite: "strict" });
             throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
         const validToken = await Token.findOne({ where: { user: id, token: refreshToken } });
 
         if (!validToken) {
+            ctx.res.clearCookie("authRefreshToken", { httpOnly: true, secure: !config.isDevMode, sameSite: "strict" });
             throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
