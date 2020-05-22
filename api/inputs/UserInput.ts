@@ -37,13 +37,4 @@ class UserChangePasswordArgs {
     password!: string;
 }
 
-@ArgsType()
-class RefreshTokenArgs {
-    @Field(() => ID)
-    id!: string;
-
-    @Field()
-    refreshToken!: string;
-}
-
-export { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs, RefreshTokenArgs };
+export { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs };

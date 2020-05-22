@@ -33,13 +33,10 @@ class UserTypeWithToken {
     authToken!: string;
 }
 
-@ObjectType({ description: "Object representing auth token and refresh token" })
-class TokensType {
+@ObjectType({ description: "Object representing auth token" })
+class TokenType {
     @Field()
     authToken!: string;
-
-    @Field()
-    refreshToken!: string;
 }
 
-export { UserType, UserTypeWithToken, TokensType };
+export { UserType, UserTypeWithToken, TokenType };

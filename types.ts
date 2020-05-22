@@ -6,7 +6,6 @@ export type TokenPayload = {
     aud: string;
     iss: string;
     iat: number;
-    nbf: number;
     exp: number;
 };
 

@@ -3,9 +3,9 @@ import jwt from "jsonwebtoken";
 
 import { generateAuthTokens } from "../../utils/generateAuthToken";
 import { User } from "../models/User";
-import { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs, RefreshTokenArgs } from "../inputs/UserInput";
-import { TokensType, UserType, UserTypeWithToken } from "../typeDefs/UserType";
-import { GraphQLContext, LoginResponse } from "../../types";
+import { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs } from "../inputs/UserInput";
+import { TokenType, UserType, UserTypeWithToken } from "../typeDefs/UserType";
+import { GraphQLContext, LoginResponse, TokenPayload } from "../../types";
 import { config } from "../../config";
 import { Token } from "../models/Token";
 import { errorNames } from "../../utils/errors";
@@ -77,23 +77,29 @@ class UserResolver {
         return user.update({ password: password });
     }
 
-    @Mutation(() => TokensType, { description: "Refreshes auth token" })
-    async refreshAuthTokens(
-        @Args() { id, refreshToken }: RefreshTokenArgs,
-        @Ctx() ctx: GraphQLContext
-    ): Promise<{ authToken: string }> {
-        const user = await User.findOne({ where: { id } });
-
-        if (!user) {
-            throw new Error(errorNames.NOT_FOUND);
+    @Mutation(() => TokenType, { description: "Refreshes auth token" })
+    async refreshAuthTokens(@Ctx() ctx: GraphQLContext): Promise<TokenType> {
+        if (!ctx.req.cookies || !ctx.req.cookies.authRefreshToken) {
+            throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
+        const refreshToken = ctx.req.cookies.authRefreshToken;
+        let decodedJwt: {} | string;
+
         try {
-            jwt.verify(refreshToken, config.jwtRefreshSecret, {
+            decodedJwt = jwt.verify(refreshToken, config.jwtRefreshSecret, {
                 audience: config.jwtAudience,
                 issuer: config.jwtIssuer
             });
         } catch (error) {
+            throw new Error(errorNames.UNPROCESSABLE_ENTITY);
+        }
+
+        const { id } = decodedJwt as TokenPayload;
+
+        const user = await User.findOne({ where: { id } });
+
+        if (!user) {
             throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
@@ -105,7 +111,7 @@ class UserResolver {
 
         const newTokens = await generateAuthTokens(user);
 
-        ctx.res.cookie("authRefreshToken", refreshToken, {
+        ctx.res.cookie("authRefreshToken", newTokens.refreshToken, {
             maxAge: config.jwtRefreshCookieMaxAge,
             httpOnly: true,
             secure: !config.isDevMode,

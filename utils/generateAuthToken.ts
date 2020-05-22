@@ -11,7 +11,6 @@ const generateAuthTokens = async (user: User): Promise<Tokens> => {
         aud: config.jwtAudience,
         iss: config.jwtIssuer,
         iat: Date.now() / 1000,
-        nbf: Date.now() / 1000,
         exp: config.jwtExpiresIn
     };
 
