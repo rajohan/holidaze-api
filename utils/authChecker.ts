@@ -1,12 +1,13 @@
 import { AuthChecker } from "type-graphql";
 
 import { GraphQLContext, AccessLevels } from "../types";
+import { errorNames } from "./errors";
 
 const authChecker: AuthChecker<GraphQLContext, AccessLevels> = ({ context }, roles): boolean => {
     const { user } = context;
 
     if (!user) {
-        return false;
+        throw new Error(errorNames.UNAUTHORIZED);
     }
 
     if (roles.length === 0) {
@@ -17,7 +18,11 @@ const authChecker: AuthChecker<GraphQLContext, AccessLevels> = ({ context }, rol
         return true;
     }
 
-    return user.accessLevel > 1 && roles.includes("ADMIN");
+    if (user.accessLevel > 1 && roles.includes("ADMIN")) {
+        return true;
+    }
+
+    throw new Error(errorNames.FORBIDDEN);
 };
 
 export { authChecker };
