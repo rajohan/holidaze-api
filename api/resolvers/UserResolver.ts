@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { generateAuthTokens } from "../../utils/generateAuthToken";
 import { User } from "../models/User";
 import { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs } from "../inputs/UserInput";
-import { TokenType, UserType, UserTypeWithToken } from "../typeDefs/UserType";
+import { AuthTokenType, UserType } from "../typeDefs/UserType";
 import { GraphQLContext, LoginResponse, TokenPayload } from "../../types";
 import { config } from "../../config";
 import { Token } from "../models/Token";
@@ -49,7 +49,7 @@ class UserResolver {
         return User.create({ username, password, email });
     }
 
-    @Mutation(() => UserTypeWithToken, { description: "Login a user" })
+    @Mutation(() => AuthTokenType, { description: "Login a user" })
     async login(@Args() { username, password }: UserLoginArgs, @Ctx() ctx: GraphQLContext): Promise<LoginResponse> {
         const user = await User.findOne({ where: { username } });
 
@@ -72,7 +72,7 @@ class UserResolver {
             sameSite: "strict"
         });
 
-        return { user, authToken };
+        return { authToken };
     }
 
     @Mutation(() => UserType, { description: "Changes a users password" })
@@ -86,8 +86,8 @@ class UserResolver {
         return user.update({ password: password });
     }
 
-    @Mutation(() => TokenType, { description: "Refreshes auth token" })
-    async refreshAuthTokens(@Ctx() ctx: GraphQLContext): Promise<TokenType> {
+    @Mutation(() => AuthTokenType, { description: "Refreshes auth token" })
+    async refreshAuthTokens(@Ctx() ctx: GraphQLContext): Promise<AuthTokenType> {
         if (!ctx.req.cookies || !ctx.req.cookies.authRefreshToken) {
             throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }

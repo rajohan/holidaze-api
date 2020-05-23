@@ -15,7 +15,6 @@ export type Tokens = {
 };
 
 export type LoginResponse = {
-    user: User;
     authToken: string;
 };
 

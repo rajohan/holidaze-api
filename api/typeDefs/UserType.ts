@@ -25,18 +25,9 @@ class UserType {
 }
 
 @ObjectType({ description: "Object representing a user with auth token" })
-class UserTypeWithToken {
-    @Field()
-    user!: UserType;
-
+class AuthTokenType {
     @Field()
     authToken!: string;
 }
 
-@ObjectType({ description: "Object representing auth token" })
-class TokenType {
-    @Field()
-    authToken!: string;
-}
-
-export { UserType, UserTypeWithToken, TokenType };
+export { UserType, AuthTokenType };
