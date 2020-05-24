@@ -14,9 +14,5 @@ export type Tokens = {
     refreshToken: string;
 };
 
-export type LoginResponse = {
-    authToken: string;
-};
-
 export type AccessLevels = "MODERATOR" | "ADMIN";
 export type GraphQLContext = { req: Request; res: Response; user: User | null };
