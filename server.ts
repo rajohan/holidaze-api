@@ -30,7 +30,7 @@ const startServer = async (): Promise<void> => {
 
     app.use(compression());
     app.use(cookieParser());
-    app.use(cors({ origin: true, credentials: true }));
+    app.use(cors({ origin: true /* corsOptions */, credentials: true }));
 
     app.use(
         "/graphql",
@@ -96,7 +96,7 @@ const startServer = async (): Promise<void> => {
         app,
         path: "/graphql",
         cors: {
-            origin: true,
+            origin: true, // corsOptions
             credentials: true
         }
     });
