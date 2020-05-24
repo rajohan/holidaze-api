@@ -69,7 +69,7 @@ class UserResolver {
             maxAge: config.jwtRefreshCookieMaxAge,
             httpOnly: true,
             secure: !config.isDevMode,
-            sameSite: "lax"
+            sameSite: "none"
         });
 
         return { authToken };
@@ -127,7 +127,7 @@ class UserResolver {
             maxAge: config.jwtRefreshCookieMaxAge,
             httpOnly: true,
             secure: !config.isDevMode,
-            sameSite: "lax"
+            sameSite: "none"
         });
 
         return { authToken: newTokens.authToken };
