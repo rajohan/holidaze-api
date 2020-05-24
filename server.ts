@@ -18,19 +18,19 @@ import { User } from "./api/models/User";
 import { insertInitialData } from "./data/initialData";
 import { errorNames, getError } from "./utils/errors";
 
-const corsOptions = (origin: string | undefined, cb: (err: null, allow?: boolean) => void): void => {
-    if (origin && config.allowedOrigins.includes(origin)) {
-        return cb(null, true);
-    }
-    return cb(null, false);
-};
+// const corsOptions = (origin: string | undefined, cb: (err: null, allow?: boolean) => void): void => {
+//     if (origin && config.allowedOrigins.includes(origin)) {
+//         return cb(null, true);
+//     }
+//     return cb(null, false);
+// };
 
 const startServer = async (): Promise<void> => {
     const app = express();
 
     app.use(compression());
     app.use(cookieParser());
-    app.use(cors({ origin: corsOptions, credentials: true }));
+    app.use(cors({ origin: true, credentials: true }));
 
     app.use(
         "/graphql",
@@ -96,7 +96,7 @@ const startServer = async (): Promise<void> => {
         app,
         path: "/graphql",
         cors: {
-            origin: corsOptions,
+            origin: true,
             credentials: true
         }
     });
