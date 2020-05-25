@@ -1,14 +1,16 @@
 import { Arg, Args, Query, Mutation, Resolver, Ctx } from "type-graphql";
 import jwt from "jsonwebtoken";
 
+import { config } from "../../config";
+import { errorNames } from "../../utils/errors";
 import { generateAuthTokens } from "../../utils/generateAuthToken";
+import { setRefreshTokenCookie } from "../../utils/setRefreshTokenCookie";
+import { clearRefreshTokenCookie } from "../../utils/clearRefreshTokenCookie";
 import { User } from "../models/User";
 import { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs } from "../inputs/UserInput";
-import { UserType, UserWithTokenType } from "../typeDefs/UserType";
+import { LogoutType, UserType, UserWithTokenType } from "../typeDefs/UserType";
 import { GraphQLContext, TokenPayload } from "../../types";
-import { config } from "../../config";
 import { Token } from "../models/Token";
-import { errorNames } from "../../utils/errors";
 
 @Resolver(User)
 class UserResolver {
@@ -21,15 +23,6 @@ class UserResolver {
         }
 
         return user;
-    }
-
-    @Query(() => UserType, { description: "Returns current signed in user" })
-    async getCurrentUser(@Ctx() ctx: GraphQLContext): Promise<UserType> {
-        if (!ctx.user) {
-            throw new Error(errorNames.UNAUTHORIZED);
-        }
-
-        return ctx.user;
     }
 
     @Query(() => [UserType], { description: "Returns all users" })
@@ -65,14 +58,20 @@ class UserResolver {
 
         const { authToken, refreshToken } = await generateAuthTokens(user);
 
-        ctx.res.cookie("authRefreshToken", refreshToken, {
-            maxAge: config.jwtRefreshCookieMaxAge,
-            httpOnly: true,
-            secure: !config.isDevMode,
-            sameSite: "none" // "strict"
-        });
+        setRefreshTokenCookie(ctx.res, refreshToken);
 
         return { authToken, user };
+    }
+
+    @Mutation(() => LogoutType, { description: "Logout a user" })
+    async logout(@Ctx() ctx: GraphQLContext): Promise<LogoutType> {
+        if (ctx.user && ctx.user.id) {
+            await Token.destroy({ where: { user: ctx.user.id } });
+        }
+
+        clearRefreshTokenCookie(ctx.res);
+
+        return { loggedOut: true };
     }
 
     @Mutation(() => UserType, { description: "Changes a users password" })
@@ -101,7 +100,7 @@ class UserResolver {
                 issuer: config.jwtIssuer
             });
         } catch (error) {
-            ctx.res.clearCookie("authRefreshToken", { httpOnly: true, secure: !config.isDevMode, sameSite: "strict" });
+            clearRefreshTokenCookie(ctx.res);
             throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
@@ -110,25 +109,20 @@ class UserResolver {
         const user = await User.findOne({ where: { id } });
 
         if (!user) {
-            ctx.res.clearCookie("authRefreshToken", { httpOnly: true, secure: !config.isDevMode, sameSite: "strict" });
+            clearRefreshTokenCookie(ctx.res);
             throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
         const validToken = await Token.findOne({ where: { user: id, token: refreshToken } });
 
         if (!validToken) {
-            ctx.res.clearCookie("authRefreshToken", { httpOnly: true, secure: !config.isDevMode, sameSite: "strict" });
+            clearRefreshTokenCookie(ctx.res);
             throw new Error(errorNames.UNPROCESSABLE_ENTITY);
         }
 
         const newTokens = await generateAuthTokens(user);
 
-        ctx.res.cookie("authRefreshToken", newTokens.refreshToken, {
-            maxAge: config.jwtRefreshCookieMaxAge,
-            httpOnly: true,
-            secure: !config.isDevMode,
-            sameSite: "none" // "strict"
-        });
+        setRefreshTokenCookie(ctx.res, newTokens.refreshToken);
 
         return { authToken: newTokens.authToken, user };
     }

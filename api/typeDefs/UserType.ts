@@ -33,4 +33,10 @@ class UserWithTokenType {
     user!: UserType;
 }
 
-export { UserType, UserWithTokenType };
+@ObjectType({ description: "Object representing a logout response" })
+class LogoutType {
+    @Field()
+    loggedOut!: boolean;
+}
+
+export { UserType, UserWithTokenType, LogoutType };
