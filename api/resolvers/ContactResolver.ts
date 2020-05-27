@@ -22,7 +22,12 @@ class ContactResolver {
     @Authorized(["MODERATOR", "ADMIN"])
     @Query(() => [ContactType], { description: "Returns all messages" })
     async getAllMessages(): Promise<Contact[]> {
-        const messages = await Contact.findAll({});
+        const messages = await Contact.findAll({
+            order: [
+                ["status", "ASC"],
+                ["createdAt", "DESC"]
+            ]
+        });
 
         if (!messages) {
             throw new Error(errorNames.NOT_FOUND);

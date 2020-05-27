@@ -31,7 +31,12 @@ class EnquiryResolver {
     @Query(() => [EnquiryType], { description: "Returns all enquiries" })
     async getAllEnquiries(@Args() { withEstablishment }: EnquiryWithEstablishmentArg): Promise<Enquiry[]> {
         const scope = withEstablishment ? "withEstablishment" : "defaultScope";
-        const enquiries = await Enquiry.scope([scope]).findAll({});
+        const enquiries = await Enquiry.scope([scope]).findAll({
+            order: [
+                ["status", "ASC"],
+                ["createdAt", "DESC"]
+            ]
+        });
 
         if (!enquiries) {
             throw new Error(errorNames.NOT_FOUND);

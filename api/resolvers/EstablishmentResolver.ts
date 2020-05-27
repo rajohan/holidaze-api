@@ -30,7 +30,7 @@ class EstablishmentResolver {
     @Query(() => [EstablishmentType], { description: "Returns all establishments" })
     async getAllEstablishments(@Args() { withEnquiries }: EstablishmentWithEnquiryArg): Promise<Establishment[]> {
         const scope = withEnquiries ? "withEnquiries" : "defaultScope";
-        const establishments = await Establishment.scope([scope]).findAll({});
+        const establishments = await Establishment.scope([scope]).findAll({ order: [["name", "ASC"]] });
 
         if (!establishments) {
             throw new Error(errorNames.NOT_FOUND);
