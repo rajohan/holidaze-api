@@ -45,7 +45,6 @@ class EnquiryResolver {
         return enquiries;
     }
 
-    @Authorized()
     @Mutation(() => EnquiryType, { description: "Adds a new enquiry" })
     async addEnquiry(@Arg("data") data: NewEnquiryInput): Promise<Enquiry> {
         const { establishmentId, clientName, email, guests, checkin, checkout } = data;
