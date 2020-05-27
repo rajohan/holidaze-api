@@ -12,6 +12,9 @@ class NewEnquiryInput implements Partial<EnquiryType> {
     @Field()
     email!: string;
 
+    @Field(() => Int)
+    guests!: number;
+
     @Field()
     checkin!: Date;
 
@@ -26,6 +29,9 @@ class UpdateEnquiryInput implements Partial<EnquiryType> {
 
     @Field({ nullable: true })
     clientName?: string;
+
+    @Field(() => Int)
+    guests!: number;
 
     @Field({ nullable: true })
     checkin?: Date;

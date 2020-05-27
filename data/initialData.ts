@@ -229,6 +229,7 @@ const enquiries = (establishment: { establishmentId: string }): [{}] => [
         establishmentId: establishment.establishmentId,
         clientName: "Mike Tindall",
         email: "miket@gmail.com",
+        guests: 4,
         checkin: new Date(2019, 5, 3),
         checkout: new Date(2019, 5, 5)
     }

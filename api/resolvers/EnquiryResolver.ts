@@ -48,22 +48,22 @@ class EnquiryResolver {
     @Authorized()
     @Mutation(() => EnquiryType, { description: "Adds a new enquiry" })
     async addEnquiry(@Arg("data") data: NewEnquiryInput): Promise<Enquiry> {
-        const { establishmentId, clientName, email, checkin, checkout } = data;
+        const { establishmentId, clientName, email, guests, checkin, checkout } = data;
 
-        return Enquiry.create({ establishmentId, clientName, email, checkin, checkout });
+        return Enquiry.create({ establishmentId, clientName, email, guests, checkin, checkout });
     }
 
     @Authorized(["MODERATOR", "ADMIN"])
     @Mutation(() => EnquiryType, { description: "Updates a enquiry by ID" })
     async updateEnquiry(@Arg("data") data: UpdateEnquiryInput): Promise<Enquiry> {
-        const { id, clientName, checkin, checkout } = data;
+        const { id, clientName, guests, checkin, checkout } = data;
         const enquiry = await Enquiry.findOne({ where: { id } });
 
         if (!enquiry) {
             throw new Error(errorNames.NOT_FOUND);
         }
 
-        return enquiry.update({ clientName, checkin, checkout });
+        return enquiry.update({ clientName, guests, checkin, checkout });
     }
 
     @Authorized(["MODERATOR", "ADMIN"])

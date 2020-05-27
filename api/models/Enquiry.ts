@@ -45,6 +45,10 @@ class Enquiry extends Model<Enquiry> {
     @Column
     email!: string;
 
+    @IsInt
+    @Column(DataType.INTEGER)
+    guests!: number;
+
     @IsDate
     @Column
     checkin!: Date;

@@ -13,6 +13,9 @@ class EnquiryType {
     @Field()
     email!: string;
 
+    @Field(() => Int)
+    guests!: number;
+
     @Field()
     checkin!: Date;
 
