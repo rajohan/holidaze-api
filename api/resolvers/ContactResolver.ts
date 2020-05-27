@@ -2,7 +2,7 @@ import { Arg, Args, Authorized, Mutation, Query, Resolver } from "type-graphql";
 
 import { errorNames } from "../../utils/errors";
 import { Contact } from "../models/Contact";
-import { NewContactInput, ContactIdArg } from "../inputs/ContactInput";
+import { NewContactInput, ContactIdArg, ChangeContactStatusInput } from "../inputs/ContactInput";
 import { ContactType } from "../typeDefs/ContactType";
 
 @Resolver(ContactType)
@@ -36,6 +36,18 @@ class ContactResolver {
         const { clientName, email, message } = data;
 
         return Contact.create({ clientName, email, message });
+    }
+
+    @Authorized(["MODERATOR", "ADMIN"])
+    @Mutation(() => ContactType, { description: "Changes the status on a message" })
+    async changeMessageStatus(@Arg("data") { id, status }: ChangeContactStatusInput): Promise<ContactType> {
+        const message = await Contact.findOne({ where: { id } });
+
+        if (!message) {
+            throw new Error(errorNames.NOT_FOUND);
+        }
+
+        return message.update({ status: status });
     }
 }
 

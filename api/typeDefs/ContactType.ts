@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, Int, ObjectType } from "type-graphql";
 
 @ObjectType({ description: "Object representing a contact message" })
 class ContactType {
@@ -13,6 +13,9 @@ class ContactType {
 
     @Field()
     message!: string;
+
+    @Field(() => Int)
+    status!: number;
 
     @Field()
     createdAt!: Date;

@@ -1,4 +1,4 @@
-import { InputType, Field, ArgsType, ID } from "type-graphql";
+import { InputType, Field, ArgsType, ID, Int } from "type-graphql";
 import { EnquiryType } from "../typeDefs/EnquiryType";
 
 @InputType({ description: "New enquiry data" })
@@ -34,6 +34,15 @@ class UpdateEnquiryInput implements Partial<EnquiryType> {
     checkout?: Date;
 }
 
+@InputType({ description: "Change enquiry status data" })
+class ChangeEnquiryStatusInput implements Partial<EnquiryType> {
+    @Field(() => ID)
+    id!: string;
+
+    @Field(() => Int)
+    status!: number;
+}
+
 @ArgsType()
 class EnquiryIdArg {
     @Field(() => ID)
@@ -46,4 +55,4 @@ class EnquiryWithEstablishmentArg {
     withEstablishment!: boolean;
 }
 
-export { NewEnquiryInput, UpdateEnquiryInput, EnquiryIdArg, EnquiryWithEstablishmentArg };
+export { NewEnquiryInput, UpdateEnquiryInput, EnquiryIdArg, EnquiryWithEstablishmentArg, ChangeEnquiryStatusInput };

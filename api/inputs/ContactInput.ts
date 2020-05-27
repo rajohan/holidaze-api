@@ -1,4 +1,4 @@
-import { InputType, Field, ArgsType, ID } from "type-graphql";
+import { InputType, Field, ArgsType, ID, Int } from "type-graphql";
 import { ContactType } from "../typeDefs/ContactType";
 
 @InputType({ description: "New contact data" })
@@ -13,10 +13,19 @@ class NewContactInput implements Partial<ContactType> {
     message!: string;
 }
 
+@InputType({ description: "Change message status data" })
+class ChangeContactStatusInput implements Partial<ContactType> {
+    @Field(() => ID)
+    id!: string;
+
+    @Field(() => Int)
+    status!: number;
+}
+
 @ArgsType()
 class ContactIdArg {
     @Field(() => ID)
     id!: string;
 }
 
-export { NewContactInput, ContactIdArg };
+export { NewContactInput, ContactIdArg, ChangeContactStatusInput };

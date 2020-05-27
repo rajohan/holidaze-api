@@ -8,7 +8,8 @@ import {
     IsEmail,
     Length,
     Default,
-    Unique
+    Unique,
+    IsInt
 } from "sequelize-typescript";
 
 @Table
@@ -30,6 +31,11 @@ class Contact extends Model<Contact> {
     @Length({ min: 10 })
     @Column(DataType.TEXT)
     message!: string;
+
+    @IsInt
+    @Default(0)
+    @Column(DataType.INTEGER)
+    status!: number;
 
     @CreatedAt
     createdAt!: Date;

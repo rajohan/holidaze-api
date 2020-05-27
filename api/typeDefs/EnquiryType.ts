@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, Int, ObjectType } from "type-graphql";
 
 import { EstablishmentType } from "./EstablishmentType";
 
@@ -18,6 +18,9 @@ class EnquiryType {
 
     @Field()
     checkout!: Date;
+
+    @Field(() => Int)
+    status!: number;
 
     @Field()
     createdAt!: Date;

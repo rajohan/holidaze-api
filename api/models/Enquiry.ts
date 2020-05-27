@@ -13,7 +13,8 @@ import {
     DefaultScope,
     DataType,
     Default,
-    Unique
+    Unique,
+    IsInt
 } from "sequelize-typescript";
 
 import { Establishment } from "./Establishment";
@@ -51,6 +52,11 @@ class Enquiry extends Model<Enquiry> {
     @IsDate
     @Column
     checkout!: Date;
+
+    @IsInt
+    @Default(0)
+    @Column(DataType.INTEGER)
+    status!: number;
 
     @CreatedAt
     createdAt!: Date;

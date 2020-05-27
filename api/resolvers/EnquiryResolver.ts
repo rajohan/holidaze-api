@@ -2,7 +2,13 @@ import { Arg, Args, Query, Mutation, Resolver, Authorized } from "type-graphql";
 
 import { errorNames } from "../../utils/errors";
 import { Enquiry } from "../models/Enquiry";
-import { NewEnquiryInput, UpdateEnquiryInput, EnquiryIdArg, EnquiryWithEstablishmentArg } from "../inputs/EnquiryInput";
+import {
+    NewEnquiryInput,
+    UpdateEnquiryInput,
+    EnquiryIdArg,
+    EnquiryWithEstablishmentArg,
+    ChangeEnquiryStatusInput
+} from "../inputs/EnquiryInput";
 import { EnquiryType } from "../typeDefs/EnquiryType";
 
 @Resolver(Enquiry)
@@ -53,6 +59,18 @@ class EnquiryResolver {
         }
 
         return enquiry.update({ clientName, checkin, checkout });
+    }
+
+    @Authorized(["MODERATOR", "ADMIN"])
+    @Mutation(() => EnquiryType, { description: "Changes the status on a enquiry" })
+    async changeEnquiryStatus(@Arg("data") { id, status }: ChangeEnquiryStatusInput): Promise<Enquiry> {
+        const enquiry = await Enquiry.findOne({ where: { id } });
+
+        if (!enquiry) {
+            throw new Error(errorNames.NOT_FOUND);
+        }
+
+        return enquiry.update({ status: status });
     }
 
     @Authorized(["MODERATOR", "ADMIN"])
