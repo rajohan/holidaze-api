@@ -9,6 +9,7 @@ import {
     EstablishmentIdArg,
     EstablishmentWithEnquiryArg
 } from "../inputs/EstablishmentInput";
+import { Enquiry } from "../models/Enquiry";
 
 @Resolver(Establishment)
 class EstablishmentResolver {
@@ -88,6 +89,8 @@ class EstablishmentResolver {
         if (!establishment) {
             throw new Error(errorNames.NOT_FOUND);
         }
+
+        await Enquiry.destroy({ where: { establishmentId: id } });
 
         await establishment.destroy();
 
