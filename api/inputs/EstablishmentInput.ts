@@ -1,4 +1,4 @@
-import { InputType, Field, ArgsType, ID } from "type-graphql";
+import { InputType, Field, ArgsType, ID, Int, Float } from "type-graphql";
 import { EstablishmentType } from "../typeDefs/EstablishmentType";
 
 @InputType({ description: "New establishment data" })
@@ -12,16 +12,16 @@ class NewEstablishmentInput implements Partial<EstablishmentType> {
     @Field()
     imageUrl!: string;
 
-    @Field()
+    @Field(() => Float)
     price!: number;
 
-    @Field()
+    @Field(() => Int)
     maxGuests!: number;
 
-    @Field()
+    @Field(() => Float)
     googleLat!: number;
 
-    @Field()
+    @Field(() => Float)
     googleLong!: number;
 
     @Field()
@@ -45,16 +45,16 @@ class UpdateEstablishmentInput implements Partial<EstablishmentType> {
     @Field({ nullable: true })
     imageUrl?: string;
 
-    @Field({ nullable: true })
+    @Field(() => Float, { nullable: true })
     price?: number;
 
-    @Field({ nullable: true })
+    @Field(() => Int, { nullable: true })
     maxGuests?: number;
 
-    @Field({ nullable: true })
+    @Field(() => Float, { nullable: true })
     googleLat?: number;
 
-    @Field({ nullable: true })
+    @Field(() => Float, { nullable: true })
     googleLong?: number;
 
     @Field({ nullable: true })
