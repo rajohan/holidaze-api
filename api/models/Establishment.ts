@@ -15,7 +15,8 @@ import {
     Scopes,
     DefaultScope,
     Default,
-    Unique
+    Unique,
+    Sequelize
 } from "sequelize-typescript";
 
 import { Enquiry } from "./Enquiry";
@@ -78,6 +79,47 @@ class Establishment extends Model<Establishment> {
 
     @HasMany(() => Enquiry)
     enquiries?: Enquiry[];
+
+    static async addSearchTSVector(sequelize: Sequelize): Promise<void> {
+        // Add a new tsvector column called search for search keywords
+        await sequelize.query(`ALTER TABLE "${this.tableName}" ADD COLUMN "search" TSVECTOR`);
+
+        // Update the search column tsvector to contain keywords from current table rows
+        await sequelize.query(
+            `UPDATE "${this.tableName}" SET "search" = setweight(to_tsvector('english', 'name'), 'A') || 
+             setweight(to_tsvector('english', 'description'), 'B')`
+        );
+
+        // Create a gin index for the search column
+        await sequelize.query(`CREATE INDEX establishment_search_idx ON "${this.tableName}" USING gin("search")`);
+
+        // A trigger function to run on each update or insert off a table row
+        await sequelize.query(`
+            CREATE OR REPLACE FUNCTION establishments_update_trigger() RETURNS trigger AS $$  
+            begin  
+              new.search :=
+                 setweight(to_tsvector('english', new.name), 'A') ||
+                 setweight(to_tsvector('english', new.description), 'B');
+              return new;
+            end  
+            $$ LANGUAGE plpgsql;
+        `);
+
+        // Trigger to run the trigger function created above
+        await sequelize.query(
+            `CREATE TRIGGER establishments_vector_update BEFORE INSERT OR UPDATE ON "${this.tableName}" 
+             FOR EACH ROW EXECUTE PROCEDURE establishments_update_trigger();`
+        );
+    }
+
+    static async search(sequelize: Sequelize, query: string): Promise<Establishment[]> {
+        query = sequelize.getQueryInterface().escape(query.replace(/ /g, ":* | ") + ":*");
+
+        return sequelize.query(
+            `SELECT * FROM "${this.tableName}" WHERE "search" @@ to_tsquery('english', ${query}) 
+             ORDER BY ts_rank("search", to_tsquery('english', ${query})) DESC LIMIT 5`
+        ) as Promise<Establishment[]>;
+    }
 }
 
 export { Establishment };

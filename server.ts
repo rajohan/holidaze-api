@@ -17,6 +17,7 @@ import { EstablishmentResolver } from "./api/resolvers/EstablishmentResolver";
 import { User } from "./api/models/User";
 import { insertInitialData } from "./data/initialData";
 import { errorNames, getError } from "./utils/errors";
+import { Establishment } from "./api/models/Establishment";
 
 // const corsOptions = (origin: string | undefined, cb: (err: null, allow?: boolean) => void): void => {
 //     if (origin && config.allowedOrigins.includes(origin)) {
@@ -112,6 +113,9 @@ const startServer = async (): Promise<void> => {
     try {
         await sequelize.sync({ force: true });
         await insertInitialData();
+        await Establishment.addSearchTSVector(sequelize);
+        const search = await Establishment.search(sequelize, "hotel relax");
+        console.log(search);
     } catch (error) {
         console.error("Unable to synchronize models.", error);
     }
