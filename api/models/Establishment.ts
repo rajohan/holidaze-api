@@ -86,8 +86,8 @@ class Establishment extends Model<Establishment> {
 
         // Update the search column tsvector to contain keywords from current table rows
         await sequelize.query(
-            `UPDATE "${this.tableName}" SET "search" = setweight(to_tsvector('english', 'name'), 'A') || 
-             setweight(to_tsvector('english', 'description'), 'B')`
+            `UPDATE "${this.tableName}" SET "search" = setweight(to_tsvector('english', coalesce(name, '')), 'A') || 
+             setweight(to_tsvector('english', coalesce(description, '')), 'B')`
         );
 
         // Create a gin index for the search column
@@ -98,8 +98,8 @@ class Establishment extends Model<Establishment> {
             CREATE OR REPLACE FUNCTION establishments_update_trigger() RETURNS trigger AS $$  
             begin  
               new.search :=
-                 setweight(to_tsvector('english', new.name), 'A') ||
-                 setweight(to_tsvector('english', new.description), 'B');
+                 setweight(to_tsvector('english', coalesce(new.name, '')), 'A') ||
+                 setweight(to_tsvector('english', coalesce(new.description, '')), 'B');
               return new;
             end  
             $$ LANGUAGE plpgsql;
