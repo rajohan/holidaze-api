@@ -7,9 +7,11 @@ import {
     NewEstablishmentInput,
     UpdateEstablishmentInput,
     EstablishmentIdArg,
-    EstablishmentWithEnquiryArg
+    EstablishmentWithEnquiryArg,
+    EstablishmentSearchArg
 } from "../inputs/EstablishmentInput";
 import { Enquiry } from "../models/Enquiry";
+import { Sequelize } from "sequelize-typescript";
 
 @Resolver(Establishment)
 class EstablishmentResolver {
@@ -38,6 +40,11 @@ class EstablishmentResolver {
         }
 
         return establishments;
+    }
+
+    @Query(() => [EstablishmentType], { description: "Returns establishments maxing a search query" })
+    async searchEstablishments(@Args() { searchQuery }: EstablishmentSearchArg): Promise<Establishment[]> {
+        return await Establishment.search(Establishment.sequelize as Sequelize, searchQuery);
     }
 
     @Authorized(["MODERATOR", "ADMIN"])

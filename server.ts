@@ -114,8 +114,6 @@ const startServer = async (): Promise<void> => {
         await sequelize.sync({ force: true });
         await insertInitialData();
         await Establishment.addSearchTSVector(sequelize);
-        // const search = await Establishment.search(sequelize, "hotel relax");
-        // console.log(search);
     } catch (error) {
         console.error("Unable to synchronize models.", error);
     }

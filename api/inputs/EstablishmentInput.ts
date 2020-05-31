@@ -76,4 +76,16 @@ class EstablishmentWithEnquiryArg {
     withEnquiries!: boolean;
 }
 
-export { NewEstablishmentInput, UpdateEstablishmentInput, EstablishmentIdArg, EstablishmentWithEnquiryArg };
+@ArgsType()
+class EstablishmentSearchArg {
+    @Field()
+    searchQuery!: string;
+}
+
+export {
+    NewEstablishmentInput,
+    UpdateEstablishmentInput,
+    EstablishmentIdArg,
+    EstablishmentWithEnquiryArg,
+    EstablishmentSearchArg
+};

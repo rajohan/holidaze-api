@@ -1,22 +1,22 @@
 import {
-    Table,
     Column,
     CreatedAt,
-    UpdatedAt,
-    Model,
     DataType,
-    Length,
-    IsUrl,
-    IsEmail,
-    IsNumeric,
-    IsInt,
-    IsFloat,
-    HasMany,
-    Scopes,
-    DefaultScope,
     Default,
+    DefaultScope,
+    HasMany,
+    IsEmail,
+    IsFloat,
+    IsInt,
+    IsNumeric,
+    IsUrl,
+    Length,
+    Model,
+    Scopes,
+    Sequelize,
+    Table,
     Unique,
-    Sequelize
+    UpdatedAt
 } from "sequelize-typescript";
 
 import { Enquiry } from "./Enquiry";
@@ -112,14 +112,16 @@ class Establishment extends Model<Establishment> {
         );
     }
 
-    // static async search(sequelize: Sequelize, query: string): Promise<Establishment[]> {
-    //     query = sequelize.getQueryInterface().escape(query.replace(/ /g, ":* | ") + ":*");
-    //
-    //     return sequelize.query(
-    //         `SELECT * FROM "${this.tableName}" WHERE "search" @@ to_tsquery('english', ${query})
-    //          ORDER BY ts_rank("search", to_tsquery('english', ${query})) DESC LIMIT 5`
-    //     ) as Promise<Establishment[]>;
-    // }
+    static async search(sequelize: Sequelize, query: string): Promise<Establishment[]> {
+        query = sequelize.getQueryInterface().escape(query.replace(/ /g, ":* | ") + ":*");
+
+        const result = await sequelize.query(
+            `SELECT * FROM "${this.tableName}" WHERE "search" @@ to_tsquery('english', ${query}) 
+             ORDER BY ts_rank("search", to_tsquery('english', ${query})) DESC LIMIT 5`
+        );
+
+        return result[0] as Establishment[];
+    }
 }
 
 export { Establishment };
