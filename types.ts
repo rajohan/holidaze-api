@@ -16,3 +16,10 @@ export type Tokens = {
 
 export type AccessLevels = "MODERATOR" | "ADMIN";
 export type GraphQLContext = { req: Request; res: Response; user: User | null };
+
+export type Mail = {
+    to: string;
+    subject: string;
+    text: string;
+    html: string;
+};

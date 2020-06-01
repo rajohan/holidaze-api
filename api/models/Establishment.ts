@@ -113,7 +113,7 @@ class Establishment extends Model<Establishment> {
     }
 
     static async search(sequelize: Sequelize, query: string): Promise<Establishment[]> {
-        query = sequelize.getQueryInterface().escape(query.replace(/ /g, ":* | ") + ":*");
+        query = sequelize.getQueryInterface().escape(query.trim().replace(/ /g, ":* | ") + ":*");
 
         const result = await sequelize.query(
             `SELECT * FROM "${this.tableName}" WHERE "search" @@ to_tsquery('english', ${query}) 

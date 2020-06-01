@@ -1,5 +1,10 @@
 # Holidaze GraphQL API Server
 
+To get the mail service working you will need to create a .env file with your [SendGrid](https://sendgrid.com)
+API key.
+
+Ex: sendGridApiKey=mySendGridApiKey
+
 ## Available Scripts
 
 In the project directory, you can run:

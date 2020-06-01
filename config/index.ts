@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 let dbCredentials: string[] = [];
 
 if (process.env.DATABASE_URL) {
@@ -22,6 +25,7 @@ const config = {
     jwtRefreshCookieMaxAge: 60 * 60 * 24 * 30 * 1000, // 30 days
     jwtRefreshCookieKey: "authRefreshToken",
     jwtRefreshCookieSameSite: "none" as boolean | "lax" | "strict" | "none" | undefined, // "strict"
+    sendGridApiKey: process.env.sendGridApiKey,
     port: process.env.PORT || 8080,
     allowedOrigins: [
         `http://localhost:${process.env.PORT || 8080}`,
