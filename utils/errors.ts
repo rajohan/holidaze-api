@@ -4,7 +4,9 @@ const errorNames = {
     FORBIDDEN: "FORBIDDEN",
     NOT_FOUND: "NOT_FOUND",
     UNPROCESSABLE_ENTITY: "UNPROCESSABLE_ENTITY",
-    INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR"
+    INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
+    USERNAME_TAKEN: "USERNAME_TAKEN",
+    EMAIL_TAKEN: "EMAIL_TAKEN"
 };
 
 const errorTypes = {
@@ -31,6 +33,14 @@ const errorTypes = {
     INTERNAL_SERVER_ERROR: {
         message: "Internal Server Error",
         statusCode: 500
+    },
+    USERNAME_TAKEN: {
+        message: "Username Taken",
+        statusCode: 422
+    },
+    EMAIL_TAKEN: {
+        message: "Email Taken",
+        statusCode: 422
     }
 };
 

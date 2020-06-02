@@ -263,14 +263,14 @@ const users = async (): Promise<{}[]> => [
         username: "holidaze",
         password: await generatePassword("admin123"),
         email: "mail@holidaze.com",
-        verified: true,
+        name: "Holidaze Admin",
         accessLevel: 2
     },
     {
         username: "rajohan",
         password: await generatePassword("test123"),
         email: "rajohan1@gmail.com",
-        verified: true
+        name: "Raymond Johannessen"
     }
 ];
 

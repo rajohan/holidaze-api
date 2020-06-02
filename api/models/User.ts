@@ -38,9 +38,9 @@ class User extends Model<User> {
     @Column
     email!: string;
 
-    @Default(false)
+    @Length({ min: 2 })
     @Column
-    verified!: boolean;
+    name!: string;
 
     @Default(0)
     @Column

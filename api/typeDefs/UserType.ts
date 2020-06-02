@@ -12,7 +12,7 @@ class UserType {
     email!: string;
 
     @Field()
-    verified?: boolean;
+    name!: string;
 
     @Field(() => Int)
     accessLevel?: number;

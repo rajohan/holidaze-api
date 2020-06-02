@@ -11,6 +11,9 @@ import { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs } from "
 import { LogoutType, UserType, UserWithTokenType } from "../typeDefs/UserType";
 import { GraphQLContext, TokenPayload } from "../../types";
 import { Token } from "../models/Token";
+import { Newsletter } from "../models/Newsletter";
+import { generateRandomPassword } from "../../utils/generateRandomPassword";
+import { sendMail } from "../../utils/sendMail";
 
 @Resolver(User)
 class UserResolver {
@@ -38,16 +41,55 @@ class UserResolver {
 
     @Mutation(() => UserType, { description: "Adds a new user" })
     async addUser(@Arg("data") data: NewUserInput): Promise<UserType> {
-        const { username, password, email } = data;
-        return User.create({ username, password, email });
+        const { username, password, email, name, newsletters } = data;
+        const usernameTaken = await User.findOne({ where: { username } });
+        const emailTaken = await User.findOne({ where: { email } });
+        const isOnNewsletterList = await Newsletter.findOne({ where: { email } });
+
+        if (usernameTaken) {
+            throw Error(errorNames.USERNAME_TAKEN);
+        }
+
+        if (emailTaken) {
+            throw Error(errorNames.EMAIL_TAKEN);
+        }
+
+        if (newsletters && !isOnNewsletterList) {
+            await Newsletter.create({ email });
+        } else if (!newsletters && isOnNewsletterList) {
+            await Newsletter.destroy({ where: { email } });
+        }
+
+        if (!password) {
+            const newPassword = generateRandomPassword();
+            await sendMail({
+                to: email,
+                subject: "Welcome To Holidaze",
+                text: `Welcome to holidaze\n\nYour password is: ${newPassword}`,
+                html: `<h1>Welcome to holidaze</h1><p>Your password is ${newPassword}</p>`
+            });
+            return User.create({ username, password: newPassword, email, name });
+        }
+
+        await sendMail({
+            to: email,
+            subject: "Welcome To Holidaze",
+            text: `Welcome to holidaze\n\nYour password is: ${password}`,
+            html: `<h1>Welcome to holidaze</h1><p>Your password is ${password}</p>`
+        });
+        return User.create({ username, password, email, name });
     }
 
     @Mutation(() => UserWithTokenType, { description: "Login a user" })
     async login(@Args() { username, password }: UserLoginArgs, @Ctx() ctx: GraphQLContext): Promise<UserWithTokenType> {
-        const user = await User.findOne({ where: { username } });
+        let user = await User.findOne({ where: { username } });
 
         if (!user) {
-            throw new Error(errorNames.UNPROCESSABLE_ENTITY);
+            user = await User.findOne({ where: { email: username } });
+
+            if (!user) {
+                throw new Error(errorNames.UNPROCESSABLE_ENTITY);
+            }
         }
 
         const passwordValid = await user.verifyPassword(password);

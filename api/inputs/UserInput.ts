@@ -7,10 +7,16 @@ class NewUserInput implements Partial<UserType> {
     username!: string;
 
     @Field()
-    password!: string;
+    password?: string;
 
     @Field()
     email!: string;
+
+    @Field()
+    name!: string;
+
+    @Field()
+    newsletters?: boolean;
 }
 
 @ArgsType()
