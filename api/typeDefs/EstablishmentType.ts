@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType, Float, Int } from "type-graphql";
 
 import { EnquiryType } from "./EnquiryType";
+import { WishlistType } from "./WishlistType";
 
 @ObjectType({ description: "Object representing a establishment" })
 class EstablishmentType {
@@ -42,6 +43,9 @@ class EstablishmentType {
 
     @Field(() => EnquiryType, { nullable: true })
     enquiries?: [EnquiryType];
+
+    @Field(() => WishlistType, { nullable: true })
+    wishlist?: [WishlistType];
 }
 
 export { EstablishmentType };

@@ -20,6 +20,7 @@ import {
 } from "sequelize-typescript";
 
 import { Enquiry } from "./Enquiry";
+import { Wishlist } from "./Wishlist";
 
 @DefaultScope(() => ({}))
 @Scopes(() => ({
@@ -79,6 +80,9 @@ class Establishment extends Model<Establishment> {
 
     @HasMany(() => Enquiry)
     enquiries?: Enquiry[];
+
+    @HasMany(() => Wishlist)
+    wishlist?: Wishlist[];
 
     static async addSearchTSVector(sequelize: Sequelize): Promise<void> {
         // Add a new tsvector column called search for search keywords

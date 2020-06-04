@@ -82,10 +82,17 @@ class EstablishmentSearchArg {
     searchQuery!: string;
 }
 
+@ArgsType()
+class EstablishmentToggleWishlistArg {
+    @Field(() => ID)
+    establishmentId!: string;
+}
+
 export {
     NewEstablishmentInput,
     UpdateEstablishmentInput,
     EstablishmentIdArg,
     EstablishmentWithEnquiryArg,
-    EstablishmentSearchArg
+    EstablishmentSearchArg,
+    EstablishmentToggleWishlistArg
 };

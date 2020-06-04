@@ -1,4 +1,4 @@
-import { Arg, Args, Query, Mutation, Resolver, Authorized } from "type-graphql";
+import { Arg, Args, Query, Mutation, Resolver, Authorized, Ctx } from "type-graphql";
 
 import { errorNames } from "../../utils/errors";
 import { Establishment } from "../models/Establishment";
@@ -8,10 +8,13 @@ import {
     UpdateEstablishmentInput,
     EstablishmentIdArg,
     EstablishmentWithEnquiryArg,
-    EstablishmentSearchArg
+    EstablishmentSearchArg,
+    EstablishmentToggleWishlistArg
 } from "../inputs/EstablishmentInput";
 import { Enquiry } from "../models/Enquiry";
 import { Sequelize } from "sequelize-typescript";
+import { GraphQLContext } from "../../types";
+import { Wishlist } from "../models/Wishlist";
 
 @Resolver(Establishment)
 class EstablishmentResolver {
@@ -21,7 +24,7 @@ class EstablishmentResolver {
         @Args() { withEnquiries }: EstablishmentWithEnquiryArg
     ): Promise<Establishment> {
         const scope = withEnquiries ? "withEnquiries" : "defaultScope";
-        const establishment = await Establishment.scope([scope]).findOne({ where: { id } });
+        const establishment = await Establishment.scope([scope]).findOne({ where: { id }, include: [Wishlist] });
 
         if (!establishment) {
             throw new Error(errorNames.NOT_FOUND);
@@ -33,7 +36,10 @@ class EstablishmentResolver {
     @Query(() => [EstablishmentType], { description: "Returns all establishments" })
     async getAllEstablishments(@Args() { withEnquiries }: EstablishmentWithEnquiryArg): Promise<Establishment[]> {
         const scope = withEnquiries ? "withEnquiries" : "defaultScope";
-        const establishments = await Establishment.scope([scope]).findAll({ order: [["name", "ASC"]] });
+        const establishments = await Establishment.scope([scope]).findAll({
+            order: [["name", "ASC"]],
+            include: [Wishlist]
+        });
 
         if (!establishments) {
             throw new Error(errorNames.NOT_FOUND);
@@ -45,6 +51,33 @@ class EstablishmentResolver {
     @Query(() => [EstablishmentType], { description: "Returns establishments maxing a search query" })
     async searchEstablishments(@Args() { searchQuery }: EstablishmentSearchArg): Promise<Establishment[]> {
         return await Establishment.search(Establishment.sequelize as Sequelize, searchQuery);
+    }
+
+    @Authorized()
+    @Mutation(() => EstablishmentType, { description: "Toggles the wishlist status on an establishment" })
+    async toggleEstablishmentWishlist(
+        @Args() { establishmentId }: EstablishmentToggleWishlistArg,
+        @Ctx() ctx: GraphQLContext
+    ): Promise<Establishment> {
+        if (!ctx.req.user) {
+            throw new Error(errorNames.FORBIDDEN);
+        }
+
+        const establishment = await Establishment.findOne({ where: { id: establishmentId } });
+
+        if (!establishment) {
+            throw new Error(errorNames.NOT_FOUND);
+        }
+
+        const isOnWishlist = await Wishlist.findOne({ where: { userId: ctx.req.user.id, establishmentId } });
+
+        if (!isOnWishlist) {
+            await Wishlist.create({ userId: ctx.req.user.id, establishmentId });
+            return establishment;
+        }
+
+        await isOnWishlist.destroy();
+        return establishment;
     }
 
     @Authorized(["MODERATOR", "ADMIN"])
