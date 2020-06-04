@@ -12,7 +12,8 @@ import {
     UserIdArg,
     UserLoginArgs,
     UserChangePasswordArgs,
-    UserForgotPasswordArgs
+    UserForgotPasswordArgs,
+    UserForgotPasswordVerifyArgs
 } from "../inputs/UserInput";
 import { LogoutType, UserType, UserWithTokenType } from "../typeDefs/UserType";
 import { GraphQLContext, TokenPayload } from "../../types";
@@ -73,8 +74,8 @@ class UserResolver {
             await sendMail({
                 to: email,
                 subject: "Welcome To Holidaze",
-                text: `Welcome to holidaze\n\nYour password is: ${newPassword}`,
-                html: `<h1>Welcome to holidaze</h1><p>Your password is ${newPassword}</p>`
+                text: `Welcome to holidaze\n\nYour password is: ${newPassword}\n\nBest regards Holidaze Support`,
+                html: `<h1>Welcome to holidaze</h1><p>Your password is ${newPassword}</p><p>Best regards Holidaze Support</p>`
             });
             return User.create({ username, password: newPassword, email, name });
         }
@@ -82,8 +83,8 @@ class UserResolver {
         await sendMail({
             to: email,
             subject: "Welcome To Holidaze",
-            text: `Welcome to holidaze\n\nYour password is: ${password}`,
-            html: `<h1>Welcome to holidaze</h1><p>Your password is ${password}</p>`
+            text: `Welcome to holidaze\n\nYour password is: ${password}\n\nBest regards Holidaze Support`,
+            html: `<h1>Welcome to holidaze</h1><p>Your password is ${password}</p><p>Best regards Holidaze Support</p>`
         });
         return User.create({ username, password, email, name });
     }
@@ -142,17 +143,48 @@ class UserResolver {
             subject: "Reset password on Holidaze",
             text: `We got a request to reset your password on Holidaze\n\n
                    To complete this request please follow the link below and set a new password\n\n
-                   ${ctx.req.baseUrl}/forgotPassword/${token}\n\n
+                   ${ctx.req.headers.origin}/forgotPassword/${token}\n\n
                    The reset password token will expire in 15 minutes.\n\n
-                   If you did not request this password reset you can ignore this email.
+                   If you did not request this password reset you can ignore this email.\n\n
+                   Best regards Holidaze Support
                    `,
             html: `<p>We got a request to reset your password on Holidaze</p>
                    <p>To complete this request please follow the link below and set a new password</p>
-                   <p>${ctx.req.baseUrl}/forgotPassword/${token}</p>
+                   <p>${ctx.req.headers.origin}/forgotPassword/${token}</p>
                    <p>The reset password token will expire in 15 minutes.</p>
                    <p>If you did not request this password reset you can ignore this email.</p>
+                   <p>Best regards Holidaze Support</p>
                   `
         });
+
+        return user;
+    }
+
+    @Mutation(() => UserType, { description: "Completes a forgot password request" })
+    async forgotPasswordVerify(@Args() { newPassword, token }: UserForgotPasswordVerifyArgs): Promise<UserType> {
+        try {
+            jwt.verify(token, config.jwtSecret, {
+                audience: config.jwtAudience,
+                issuer: config.jwtIssuer
+            });
+        } catch (error) {
+            throw new Error(errorNames.UNPROCESSABLE_ENTITY);
+        }
+
+        const userId = await ForgotPassword.findOne({ where: { token } });
+
+        if (!userId) {
+            throw new Error(errorNames.NOT_FOUND);
+        }
+
+        const user = await User.findOne({ where: { id: userId.user } });
+
+        if (!user) {
+            throw new Error(errorNames.NOT_FOUND);
+        }
+
+        await user.update({ password: newPassword });
+        await userId.destroy();
 
         return user;
     }

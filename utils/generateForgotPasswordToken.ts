@@ -12,9 +12,7 @@ const generateForgotPasswordToken = (user: User): string => {
         exp: config.jwtExpiresIn()
     };
 
-    const authToken = jwt.sign(payloadAuthToken, config.jwtSecret);
-
-    return authToken;
+    return jwt.sign(payloadAuthToken, config.jwtSecret);
 };
 
 export { generateForgotPasswordToken };
