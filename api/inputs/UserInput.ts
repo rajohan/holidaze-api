@@ -43,4 +43,10 @@ class UserChangePasswordArgs {
     password!: string;
 }
 
-export { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs };
+@ArgsType()
+class UserForgotPasswordArgs {
+    @Field()
+    email!: string;
+}
+
+export { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs, UserForgotPasswordArgs };

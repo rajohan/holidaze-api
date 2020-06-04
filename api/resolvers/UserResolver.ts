@@ -7,13 +7,21 @@ import { generateAuthTokens } from "../../utils/generateAuthToken";
 import { setRefreshTokenCookie } from "../../utils/setRefreshTokenCookie";
 import { clearRefreshTokenCookie } from "../../utils/clearRefreshTokenCookie";
 import { User } from "../models/User";
-import { NewUserInput, UserIdArg, UserLoginArgs, UserChangePasswordArgs } from "../inputs/UserInput";
+import {
+    NewUserInput,
+    UserIdArg,
+    UserLoginArgs,
+    UserChangePasswordArgs,
+    UserForgotPasswordArgs
+} from "../inputs/UserInput";
 import { LogoutType, UserType, UserWithTokenType } from "../typeDefs/UserType";
 import { GraphQLContext, TokenPayload } from "../../types";
 import { Token } from "../models/Token";
 import { Newsletter } from "../models/Newsletter";
+import { ForgotPassword } from "../models/ForgotPassword";
 import { generateRandomPassword } from "../../utils/generateRandomPassword";
 import { sendMail } from "../../utils/sendMail";
+import { generateForgotPasswordToken } from "../../utils/generateForgotPasswordToken";
 
 @Resolver(User)
 class UserResolver {
@@ -114,6 +122,39 @@ class UserResolver {
         clearRefreshTokenCookie(ctx.res);
 
         return { loggedOut: true };
+    }
+
+    @Mutation(() => UserType, { description: "Creates a token to reset a users password" })
+    async forgotPassword(@Args() { email }: UserForgotPasswordArgs, @Ctx() ctx: GraphQLContext): Promise<UserType> {
+        const user = await User.findOne({ where: { email } });
+
+        if (!user) {
+            throw new Error(errorNames.NOT_FOUND);
+        }
+
+        const token = generateForgotPasswordToken(user);
+
+        await ForgotPassword.destroy({ where: { user: user.id } });
+        await ForgotPassword.create({ user: user.id, token: token });
+
+        await sendMail({
+            to: email,
+            subject: "Reset password on Holidaze",
+            text: `We got a request to reset your password on Holidaze\n\n
+                   To complete this request please follow the link below and set a new password\n\n
+                   ${ctx.req.baseUrl}/forgotPassword/${token}\n\n
+                   The reset password token will expire in 15 minutes.\n\n
+                   If you did not request this password reset you can ignore this email.
+                   `,
+            html: `<p>We got a request to reset your password on Holidaze</p>
+                   <p>To complete this request please follow the link below and set a new password</p>
+                   <p>${ctx.req.baseUrl}/forgotPassword/${token}</p>
+                   <p>The reset password token will expire in 15 minutes.</p>
+                   <p>If you did not request this password reset you can ignore this email.</p>
+                  `
+        });
+
+        return user;
     }
 
     @Mutation(() => UserType, { description: "Changes a users password" })
