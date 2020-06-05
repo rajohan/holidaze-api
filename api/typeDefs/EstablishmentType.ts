@@ -2,6 +2,7 @@ import { Field, ID, ObjectType, Float, Int } from "type-graphql";
 
 import { EnquiryType } from "./EnquiryType";
 import { WishlistType } from "./WishlistType";
+import { RateType } from "./RateType";
 
 @ObjectType({ description: "Object representing a establishment" })
 class EstablishmentType {
@@ -40,6 +41,9 @@ class EstablishmentType {
 
     @Field()
     updatedAt!: Date;
+
+    @Field(() => RateType, { nullable: true })
+    rating?: [RateType];
 
     @Field(() => EnquiryType, { nullable: true })
     enquiries?: [EnquiryType];

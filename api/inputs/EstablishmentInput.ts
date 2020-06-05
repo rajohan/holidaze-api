@@ -88,11 +88,21 @@ class EstablishmentToggleWishlistArg {
     establishmentId!: string;
 }
 
+@ArgsType()
+class EstablishmentRateArg {
+    @Field(() => ID)
+    establishmentId!: string;
+
+    @Field(() => Float)
+    rating!: number;
+}
+
 export {
     NewEstablishmentInput,
     UpdateEstablishmentInput,
     EstablishmentIdArg,
     EstablishmentWithEnquiryArg,
     EstablishmentSearchArg,
-    EstablishmentToggleWishlistArg
+    EstablishmentToggleWishlistArg,
+    EstablishmentRateArg
 };

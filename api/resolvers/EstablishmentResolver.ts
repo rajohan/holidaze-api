@@ -9,12 +9,14 @@ import {
     EstablishmentIdArg,
     EstablishmentWithEnquiryArg,
     EstablishmentSearchArg,
-    EstablishmentToggleWishlistArg
+    EstablishmentToggleWishlistArg,
+    EstablishmentRateArg
 } from "../inputs/EstablishmentInput";
 import { Enquiry } from "../models/Enquiry";
 import { Sequelize } from "sequelize-typescript";
 import { GraphQLContext } from "../../types";
 import { Wishlist } from "../models/Wishlist";
+import { Rate } from "../models/Rate";
 
 @Resolver(Establishment)
 class EstablishmentResolver {
@@ -24,7 +26,7 @@ class EstablishmentResolver {
         @Args() { withEnquiries }: EstablishmentWithEnquiryArg
     ): Promise<Establishment> {
         const scope = withEnquiries ? "withEnquiries" : "defaultScope";
-        const establishment = await Establishment.scope([scope]).findOne({ where: { id }, include: [Wishlist] });
+        const establishment = await Establishment.scope([scope]).findOne({ where: { id }, include: [Wishlist, Rate] });
 
         if (!establishment) {
             throw new Error(errorNames.NOT_FOUND);
@@ -38,7 +40,7 @@ class EstablishmentResolver {
         const scope = withEnquiries ? "withEnquiries" : "defaultScope";
         const establishments = await Establishment.scope([scope]).findAll({
             order: [["name", "ASC"]],
-            include: [Wishlist]
+            include: [Wishlist, Rate]
         });
 
         if (!establishments) {
@@ -51,6 +53,24 @@ class EstablishmentResolver {
     @Query(() => [EstablishmentType], { description: "Returns establishments maxing a search query" })
     async searchEstablishments(@Args() { searchQuery }: EstablishmentSearchArg): Promise<Establishment[]> {
         return await Establishment.search(Establishment.sequelize as Sequelize, searchQuery);
+    }
+
+    @Authorized()
+    @Mutation(() => EstablishmentType, { description: "Rates an establishment" })
+    async rateEstablishment(
+        @Args() { establishmentId, rating }: EstablishmentRateArg,
+        @Ctx() ctx: GraphQLContext
+    ): Promise<Establishment> {
+        const establishment = await Establishment.findOne({ where: { id: establishmentId } });
+
+        if (!establishment) {
+            throw new Error(errorNames.NOT_FOUND);
+        }
+
+        await Rate.destroy({ where: { userId: ctx.req.user.id, establishmentId } });
+        await Rate.create({ userId: ctx.req.user.id, establishmentId, rating });
+
+        return establishment;
     }
 
     @Authorized()

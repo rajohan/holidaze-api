@@ -21,6 +21,7 @@ import {
 
 import { Enquiry } from "./Enquiry";
 import { Wishlist } from "./Wishlist";
+import { Rate } from "./Rate";
 
 @DefaultScope(() => ({}))
 @Scopes(() => ({
@@ -77,6 +78,9 @@ class Establishment extends Model<Establishment> {
 
     @UpdatedAt
     updatedAt!: Date;
+
+    @HasMany(() => Rate)
+    rating?: Rate[];
 
     @HasMany(() => Enquiry)
     enquiries?: Enquiry[];
