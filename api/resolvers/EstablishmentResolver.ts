@@ -59,10 +59,6 @@ class EstablishmentResolver {
         @Args() { establishmentId }: EstablishmentToggleWishlistArg,
         @Ctx() ctx: GraphQLContext
     ): Promise<Establishment> {
-        if (!ctx.req.user) {
-            throw new Error(errorNames.FORBIDDEN);
-        }
-
         const establishment = await Establishment.findOne({ where: { id: establishmentId } });
 
         if (!establishment) {
