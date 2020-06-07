@@ -9,7 +9,7 @@ const establishments = [
         name: "Sunset Beach",
         email: "info@sunsetbeach.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1439130490301-25e322d88054?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80",
+            "https://images.unsplash.com/photo-1439130490301-25e322d88054?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 85,
         maxGuests: 18,
         googleLat: 60.393388,
@@ -22,7 +22,7 @@ const establishments = [
         name: "Rest Easy",
         email: "management@resteasy.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1512552288940-3a300922a275?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=751&q=80",
+            "https://images.unsplash.com/photo-1512552288940-3a300922a275?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 120,
         maxGuests: 14,
         googleLat: 60.396779,
@@ -35,7 +35,7 @@ const establishments = [
         name: "The Hideaway",
         email: "info@hideaway.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1551906993-c8b38a6ab201?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=666&q=80",
+            "https://images.unsplash.com/photo-1551906993-c8b38a6ab201?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 70,
         maxGuests: 2,
         googleLat: 60.425168,
@@ -47,7 +47,7 @@ const establishments = [
         name: "Farm Cottage",
         email: "info@cottageholidays.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1505916349660-8d91a99c3e23?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
+            "https://images.unsplash.com/photo-1505916349660-8d91a99c3e23?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 100,
         maxGuests: 8,
         googleLat: 60.42175,
@@ -60,7 +60,7 @@ const establishments = [
         name: "Tree Tops",
         email: "enquiries@treetops.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1550355191-aa8a80b41353?ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80",
+            "https://images.unsplash.com/photo-1550355191-aa8a80b41353?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=600&h=337&auto=format&fit=crop&crop=focal&fp-y=0.4&fp-x=0.5&q=80",
         price: 95.0,
         maxGuests: 6,
         googleLat: 60.405482,
@@ -73,7 +73,7 @@ const establishments = [
         name: "Coast to Coast",
         email: "enquiries@coasttocoast.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1544085701-4d54e9f41c45?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=889&q=80",
+            "https://images.unsplash.com/photo-1544085701-4d54e9f41c45?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 55,
         maxGuests: 4,
         googleLat: 60.397053,
@@ -85,7 +85,7 @@ const establishments = [
         name: "Koselig hytte Spa Resort",
         email: "info@koselighyttespa.no",
         imageUrl:
-            "https://images.unsplash.com/photo-1469394576569-858815b13427?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=849&q=80",
+            "https://images.unsplash.com/photo-1469394576569-858815b13427?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 105,
         maxGuests: 4,
         googleLat: 60.487134,
@@ -98,7 +98,7 @@ const establishments = [
         name: "City Break",
         email: "info@citybreakapartment.no",
         imageUrl:
-            "https://images.unsplash.com/photo-1509365390695-33aee754301f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
+            "https://images.unsplash.com/photo-1509365390695-33aee754301f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 60,
         maxGuests: 2,
         googleLat: 60.390076,
@@ -111,7 +111,7 @@ const establishments = [
         name: "Fjell Hotel",
         email: "desk@fjellhotel.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1501117716987-c8c394bb29df?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
+            "https://images.unsplash.com/photo-1501117716987-c8c394bb29df?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 160,
         maxGuests: 4,
         googleLat: 60.353245,
@@ -124,7 +124,7 @@ const establishments = [
         name: "Glede Mountain Lodge",
         email: "enquiries@gledemountain.no",
         imageUrl:
-            "https://images.unsplash.com/photo-1517320964276-a002fa203177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=375&q=80",
+            "https://images.unsplash.com/photo-1517320964276-a002fa203177?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=600&h=337&auto=format&fit=crop&crop=focal&fp-y=1&fp-x=1&q=80",
         price: 110,
         maxGuests: 6,
         googleLat: 60.406214,
@@ -137,7 +137,7 @@ const establishments = [
         name: "Home from Home",
         email: "info@homefromhome.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1546555648-fb7876c40c58?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=755&q=80",
+            "https://images.unsplash.com/photo-1546555648-fb7876c40c58?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 80,
         maxGuests: 10,
         googleLat: 60.345025,
@@ -150,7 +150,7 @@ const establishments = [
         name: "Lodge Hotel",
         email: "info@lodgehotel.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1548873902-8b69fb85030a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
+            "https://images.unsplash.com/photo-1548873902-8b69fb85030a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=600&h=337&fit=crop&auto=format&q=80&crop=focal&fp-x=0.7&fp-y=0.7",
         price: 75,
         maxGuests: 20,
         googleLat: 60.311531,
@@ -163,7 +163,7 @@ const establishments = [
         name: "The Shed",
         email: "enquiries@theshedaccomodation.no",
         imageUrl:
-            "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
+            "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
         price: 50,
         maxGuests: 2,
         googleLat: 60.335076,
@@ -176,7 +176,7 @@ const establishments = [
         name: "Innsjø Hus",
         email: "enquiries@innsjøhus.no",
         imageUrl:
-            "https://images.unsplash.com/photo-1469394576569-858815b13427?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=849&q=80",
+            "https://images.unsplash.com/photo-1469394576569-858815b13427?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 200,
         maxGuests: 8,
         googleLat: 61.084654,
@@ -189,7 +189,7 @@ const establishments = [
         name: "Peace and Quiet",
         email: "enquiries@peaceandquiet.no",
         imageUrl:
-            "https://images.unsplash.com/photo-1479123142480-cbdc7b84de24?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=678&q=80",
+            "https://images.unsplash.com/photo-1479123142480-cbdc7b84de24?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 150,
         maxGuests: 10,
         googleLat: 60.374245,
@@ -201,7 +201,7 @@ const establishments = [
         name: "Adam's Place",
         email: "enquiries@adamsplace.no",
         imageUrl:
-            "https://images.unsplash.com/photo-1507038772120-7fff76f79d79?ixlib=rb-1.2.1&auto=format&fit=crop&w=667&q=80",
+            "https://images.unsplash.com/photo-1507038772120-7fff76f79d79?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
         price: 60,
         maxGuests: 3,
         googleLat: 60.383708,
@@ -213,7 +213,7 @@ const establishments = [
         name: "Buena Vista",
         email: "info@buenavista.com",
         imageUrl:
-            "https://images.unsplash.com/photo-1523791633495-94ebabc8a795?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80",
+            "https://images.unsplash.com/photo-1523791633495-94ebabc8a795?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=600&q=80",
         price: 45,
         maxGuests: 6,
         googleLat: 60.374416,
