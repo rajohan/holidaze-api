@@ -1,11 +1,18 @@
-import { Arg, Mutation, Resolver } from "type-graphql";
+import { Arg, Args, Mutation, Query, Resolver } from "type-graphql";
 
-import { NewsletterType } from "../typeDefs/NewsletterType";
+import { IsOnNewsletterListType, NewsletterType } from "../typeDefs/NewsletterType";
 import { Newsletter } from "../models/Newsletter";
-import { AddToNewsletterInput, RemoveFromNewsletterInput } from "../inputs/NewsletterInput";
+import { AddToNewsletterInput, IsOnNewsletterListArgs, RemoveFromNewsletterInput } from "../inputs/NewsletterInput";
 
-@Resolver(NewsletterType)
+@Resolver(Newsletter)
 class NewsletterResolver {
+    @Query(() => IsOnNewsletterListType, { description: "Checks if a email is on the newsletter list" })
+    async isOnNewsletterList(@Args() { email }: IsOnNewsletterListArgs): Promise<IsOnNewsletterListType> {
+        const isOnList = await Newsletter.findOne({ where: { email } });
+
+        return { isOnNewsletterList: !!isOnList };
+    }
+
     @Mutation(() => NewsletterType, { description: "Adds a email to the newsletter list" })
     async AddToNewsletter(@Arg("data") data: AddToNewsletterInput): Promise<Newsletter> {
         const { email } = data;
@@ -13,7 +20,6 @@ class NewsletterResolver {
 
         if (isOnList) {
             await Newsletter.destroy({ where: { email } });
-            return isOnList;
         }
 
         return Newsletter.create({ email });

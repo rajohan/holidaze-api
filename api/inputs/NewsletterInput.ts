@@ -1,4 +1,4 @@
-import { Field, InputType } from "type-graphql";
+import { ArgsType, Field, InputType } from "type-graphql";
 
 import { NewsletterType } from "../typeDefs/NewsletterType";
 
@@ -14,4 +14,10 @@ class RemoveFromNewsletterInput implements Partial<NewsletterType> {
     email!: string;
 }
 
-export { AddToNewsletterInput, RemoveFromNewsletterInput };
+@ArgsType()
+class IsOnNewsletterListArgs {
+    @Field()
+    email!: string;
+}
+
+export { AddToNewsletterInput, RemoveFromNewsletterInput, IsOnNewsletterListArgs };

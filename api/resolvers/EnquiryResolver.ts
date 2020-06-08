@@ -1,4 +1,4 @@
-import { Arg, Args, Query, Mutation, Resolver, Authorized } from "type-graphql";
+import { Arg, Args, Query, Mutation, Resolver, Authorized, Ctx } from "type-graphql";
 
 import { errorNames } from "../../utils/errors";
 import { Enquiry } from "../models/Enquiry";
@@ -10,6 +10,8 @@ import {
     ChangeEnquiryStatusInput
 } from "../inputs/EnquiryInput";
 import { EnquiryType } from "../typeDefs/EnquiryType";
+import { GraphQLContext } from "../../types";
+import { Establishment } from "../models/Establishment";
 
 @Resolver(Enquiry)
 class EnquiryResolver {
@@ -43,6 +45,16 @@ class EnquiryResolver {
         }
 
         return enquiries;
+    }
+
+    @Authorized()
+    @Query(() => [EnquiryType], { description: "Return all enquiries by a user" })
+    async getAllEnquiriesByUser(@Ctx() ctx: GraphQLContext): Promise<Enquiry[]> {
+        if (!ctx.user || !ctx.user.id) {
+            throw new Error(errorNames.UNAUTHORIZED);
+        }
+
+        return Enquiry.findAll({ where: { email: ctx.user.email }, include: [Establishment] });
     }
 
     @Mutation(() => EnquiryType, { description: "Adds a new enquiry" })

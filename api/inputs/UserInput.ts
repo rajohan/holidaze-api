@@ -20,12 +20,6 @@ class NewUserInput implements Partial<UserType> {
 }
 
 @ArgsType()
-class UserIdArg {
-    @Field(() => ID)
-    id!: string;
-}
-
-@ArgsType()
 class UserLoginArgs {
     @Field()
     username!: string;
@@ -58,11 +52,4 @@ class UserForgotPasswordVerifyArgs {
     token!: string;
 }
 
-export {
-    NewUserInput,
-    UserIdArg,
-    UserLoginArgs,
-    UserChangePasswordArgs,
-    UserForgotPasswordArgs,
-    UserForgotPasswordVerifyArgs
-};
+export { NewUserInput, UserLoginArgs, UserChangePasswordArgs, UserForgotPasswordArgs, UserForgotPasswordVerifyArgs };

@@ -1,4 +1,4 @@
-import { Arg, Args, Query, Mutation, Resolver, Ctx } from "type-graphql";
+import { Arg, Args, Query, Mutation, Resolver, Ctx, Authorized } from "type-graphql";
 import jwt from "jsonwebtoken";
 
 import { config } from "../../config";
@@ -9,7 +9,6 @@ import { clearRefreshTokenCookie } from "../../utils/clearRefreshTokenCookie";
 import { User } from "../models/User";
 import {
     NewUserInput,
-    UserIdArg,
     UserLoginArgs,
     UserChangePasswordArgs,
     UserForgotPasswordArgs,
@@ -26,9 +25,14 @@ import { generateForgotPasswordToken } from "../../utils/generateForgotPasswordT
 
 @Resolver(User)
 class UserResolver {
-    @Query(() => UserType, { description: "Returns a user by ID" })
-    async getUser(@Args() { id }: UserIdArg): Promise<UserType> {
-        const user = await User.findOne({ where: { id } });
+    @Authorized()
+    @Query(() => UserType, { description: "Returns current signed in user" })
+    async getUser(@Ctx() ctx: GraphQLContext): Promise<UserType> {
+        if (!ctx.user || !ctx.user.id) {
+            throw new Error(errorNames.UNAUTHORIZED);
+        }
+
+        const user = await User.findOne({ where: { id: ctx.user.id } });
 
         if (!user) {
             throw new Error(errorNames.NOT_FOUND);

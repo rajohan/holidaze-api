@@ -15,4 +15,10 @@ class NewsletterType {
     updatedAt!: Date;
 }
 
-export { NewsletterType };
+@ObjectType({ description: "Object representing if a user is on the newsletter list" })
+class IsOnNewsletterListType {
+    @Field()
+    isOnNewsletterList!: boolean;
+}
+
+export { NewsletterType, IsOnNewsletterListType };

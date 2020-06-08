@@ -14,6 +14,7 @@ import { ContactResolver } from "./api/resolvers/ContactResolver";
 import { EnquiryResolver } from "./api/resolvers/EnquiryResolver";
 import { UserResolver } from "./api/resolvers/UserResolver";
 import { EstablishmentResolver } from "./api/resolvers/EstablishmentResolver";
+import { NewsletterResolver } from "./api/resolvers/NewsletterResolver";
 import { User } from "./api/models/User";
 import { insertInitialData } from "./data/initialData";
 import { errorNames, getError } from "./utils/errors";
@@ -53,7 +54,7 @@ const startServer = async (): Promise<void> => {
     });
 
     const schema = await buildSchema({
-        resolvers: [UserResolver, ContactResolver, EnquiryResolver, EstablishmentResolver],
+        resolvers: [UserResolver, ContactResolver, EnquiryResolver, EstablishmentResolver, NewsletterResolver],
         authChecker: authChecker,
         validate: false
     });
