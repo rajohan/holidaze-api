@@ -19,7 +19,7 @@ class NewsletterResolver {
         const isOnList = await Newsletter.findOne({ where: { email } });
 
         if (isOnList) {
-            await Newsletter.destroy({ where: { email } });
+            return isOnList;
         }
 
         return Newsletter.create({ email });
