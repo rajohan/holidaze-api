@@ -12,6 +12,10 @@ import {
 import { EnquiryType } from "../typeDefs/EnquiryType";
 import { GraphQLContext } from "../../types";
 import { Establishment } from "../models/Establishment";
+import { User } from "../models/User";
+import { generateRandomUsername } from "../../utils/generateRandomUsername";
+import { generateRandomPassword } from "../../utils/generateRandomPassword";
+import { sendMail } from "../../utils/sendMail";
 
 @Resolver(Enquiry)
 class EnquiryResolver {
@@ -21,7 +25,7 @@ class EnquiryResolver {
         @Args() { withEstablishment }: EnquiryWithEstablishmentArg
     ): Promise<Enquiry> {
         const scope = withEstablishment ? "withEstablishment" : "defaultScope";
-        const enquiry = await Enquiry.scope([scope]).findOne({ where: { id: id } });
+        const enquiry = await Enquiry.scope([scope]).findOne({ where: { id: id }, include: [User] });
 
         if (!enquiry) {
             throw new Error(errorNames.NOT_FOUND);
@@ -37,7 +41,8 @@ class EnquiryResolver {
             order: [
                 ["status", "ASC"],
                 ["createdAt", "DESC"]
-            ]
+            ],
+            include: [User]
         });
 
         if (!enquiries) {
@@ -54,14 +59,42 @@ class EnquiryResolver {
             throw new Error(errorNames.UNAUTHORIZED);
         }
 
-        return Enquiry.findAll({ where: { email: ctx.user.email }, include: [Establishment] });
+        return Enquiry.findAll({ where: { userId: ctx.user.id }, include: [Establishment] });
     }
 
     @Mutation(() => EnquiryType, { description: "Adds a new enquiry" })
-    async addEnquiry(@Arg("data") data: NewEnquiryInput): Promise<Enquiry> {
+    async addEnquiry(@Arg("data") data: NewEnquiryInput, @Ctx() ctx: GraphQLContext): Promise<Enquiry> {
         const { establishmentId, clientName, email, guests, checkin, checkout } = data;
 
-        return Enquiry.create({ establishmentId, clientName, email, guests, checkin, checkout });
+        if (!ctx.user || !ctx.user.id) {
+            let username = email.split("@")[0];
+
+            const usernameTaken = await User.findOne({ where: { username } });
+            const emailTaken = await User.findOne({ where: { email } });
+
+            if (emailTaken) {
+                throw Error(errorNames.EMAIL_TAKEN);
+            }
+
+            if (usernameTaken) {
+                username = username.substr(0, 3) + generateRandomUsername();
+            }
+
+            const password = generateRandomPassword();
+
+            await sendMail({
+                to: email,
+                subject: "Welcome To Holidaze",
+                text: `Welcome to holidaze\n\nYour username is: ${username}\n\nYour password is: ${password}\n\nBest regards Holidaze Support`,
+                html: `<h1>Welcome to holidaze</h1><p>Your username is: ${username}</p><p>Your password is: ${password}</p><p>Best regards Holidaze Support</p>`
+            });
+
+            const user = await User.create({ username, password, email, name: clientName });
+
+            return Enquiry.create({ establishmentId, userId: user.id, guests, checkin, checkout });
+        }
+
+        return Enquiry.create({ establishmentId, userId: ctx.user.id, guests, checkin, checkout });
     }
 
     @Authorized(["MODERATOR", "ADMIN"])

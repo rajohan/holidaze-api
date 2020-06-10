@@ -4,8 +4,6 @@ import {
     CreatedAt,
     UpdatedAt,
     Model,
-    IsEmail,
-    Length,
     IsDate,
     ForeignKey,
     BelongsTo,
@@ -18,6 +16,7 @@ import {
 } from "sequelize-typescript";
 
 import { Establishment } from "./Establishment";
+import { User } from "./User";
 
 @DefaultScope(() => ({}))
 @Scopes(() => ({
@@ -36,14 +35,9 @@ class Enquiry extends Model<Enquiry> {
     @Column(DataType.UUID)
     establishmentId!: string;
 
-    @Length({ min: 2 })
-    @Column
-    clientName!: string;
-
-    @IsEmail
-    @Length({ min: 5 })
-    @Column
-    email!: string;
+    @ForeignKey(() => User)
+    @Column(DataType.UUID)
+    userId!: string;
 
     @IsInt
     @Column(DataType.INTEGER)
@@ -70,6 +64,9 @@ class Enquiry extends Model<Enquiry> {
 
     @BelongsTo(() => Establishment)
     establishment!: Establishment;
+
+    @BelongsTo(() => User)
+    user!: User;
 }
 
 export { Enquiry };

@@ -1,17 +1,18 @@
 import { Field, ID, Int, ObjectType } from "type-graphql";
 
 import { EstablishmentType } from "./EstablishmentType";
+import { UserType } from "./UserType";
 
 @ObjectType({ description: "Object representing a enquiry" })
 class EnquiryType {
     @Field(() => ID)
     id!: string;
 
-    @Field()
-    clientName!: string;
+    @Field(() => ID)
+    establishmentId!: string;
 
-    @Field()
-    email!: string;
+    @Field(() => ID)
+    userId!: string;
 
     @Field(() => Int)
     guests!: number;
@@ -33,6 +34,9 @@ class EnquiryType {
 
     @Field(() => EstablishmentType)
     establishment!: EstablishmentType;
+
+    @Field(() => UserType)
+    user!: UserType;
 }
 
 export { EnquiryType };

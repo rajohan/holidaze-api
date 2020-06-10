@@ -224,11 +224,11 @@ const establishments = [
     }
 ];
 
-const enquiries = (establishment: { establishmentId: string }): [{}] => [
+const enquiries = (establishment: { establishmentId: string }, user: { userId: string; name: string }): [{}] => [
     {
         establishmentId: establishment.establishmentId,
-        clientName: "Mike Tindall",
-        email: "miket@gmail.com",
+        userId: user.userId,
+        clientName: user.name,
         guests: 4,
         checkin: new Date(2019, 5, 3),
         checkout: new Date(2019, 5, 5)
@@ -278,8 +278,13 @@ const insertInitialData = async (): Promise<void> => {
     const userData = await users();
 
     const createdEstablishments = await Establishment.bulkCreate(establishments);
-    await Enquiry.bulkCreate(enquiries({ establishmentId: createdEstablishments[0].getDataValue("id") }));
-    await User.bulkCreate(userData);
+    const createdUsers = await User.bulkCreate(userData);
+    await Enquiry.bulkCreate(
+        enquiries(
+            { establishmentId: createdEstablishments[0].getDataValue("id") },
+            { userId: createdUsers[1].getDataValue("id"), name: createdUsers[1].getDataValue("name") }
+        )
+    );
     await Contact.bulkCreate(contact);
 
     console.log("Initial data inserted to the database");
