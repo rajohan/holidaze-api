@@ -1,4 +1,4 @@
-import { InputType, Field, ArgsType, ID } from "type-graphql";
+import { InputType, Field, ArgsType } from "type-graphql";
 import { UserType } from "../typeDefs/UserType";
 
 @InputType({ description: "New user data" })
@@ -19,6 +19,21 @@ class NewUserInput implements Partial<UserType> {
     newsletters?: boolean;
 }
 
+@InputType({ description: "Edit user data" })
+class EditUserInput implements Partial<UserType> {
+    @Field()
+    username!: string;
+
+    @Field()
+    email!: string;
+
+    @Field()
+    name!: string;
+
+    @Field()
+    newsletters!: boolean;
+}
+
 @ArgsType()
 class UserLoginArgs {
     @Field()
@@ -30,9 +45,6 @@ class UserLoginArgs {
 
 @ArgsType()
 class UserChangePasswordArgs {
-    @Field(() => ID)
-    id!: string;
-
     @Field()
     password!: string;
 }
@@ -52,4 +64,11 @@ class UserForgotPasswordVerifyArgs {
     token!: string;
 }
 
-export { NewUserInput, UserLoginArgs, UserChangePasswordArgs, UserForgotPasswordArgs, UserForgotPasswordVerifyArgs };
+export {
+    NewUserInput,
+    UserLoginArgs,
+    UserChangePasswordArgs,
+    UserForgotPasswordArgs,
+    UserForgotPasswordVerifyArgs,
+    EditUserInput
+};

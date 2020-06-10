@@ -12,7 +12,8 @@ import {
     UserLoginArgs,
     UserChangePasswordArgs,
     UserForgotPasswordArgs,
-    UserForgotPasswordVerifyArgs
+    UserForgotPasswordVerifyArgs,
+    EditUserInput
 } from "../inputs/UserInput";
 import { LogoutType, UserType, UserWithTokenType } from "../typeDefs/UserType";
 import { GraphQLContext, TokenPayload } from "../../types";
@@ -193,15 +194,57 @@ class UserResolver {
         return user;
     }
 
+    @Authorized()
     @Mutation(() => UserType, { description: "Changes a users password" })
-    async changePassword(@Args() { id, password }: UserChangePasswordArgs): Promise<UserType> {
-        const user = await User.findOne({ where: { id } });
+    async changePassword(@Args() { password }: UserChangePasswordArgs, @Ctx() ctx: GraphQLContext): Promise<UserType> {
+        if (!ctx.user || !ctx.user.id) {
+            throw new Error(errorNames.UNAUTHORIZED);
+        }
+
+        const user = await User.findOne({ where: { id: ctx.user.id } });
 
         if (!user) {
             throw new Error(errorNames.NOT_FOUND);
         }
 
         return user.update({ password: password });
+    }
+
+    @Authorized()
+    @Mutation(() => UserType, { description: "Edits a users details" })
+    async editUser(@Arg("data") data: EditUserInput, @Ctx() ctx: GraphQLContext): Promise<UserType> {
+        const { username, email, name, newsletters } = data;
+
+        if (!ctx.user || !ctx.user.id) {
+            throw new Error(errorNames.UNAUTHORIZED);
+        }
+
+        const user = await User.findOne({ where: { id: ctx.user.id } });
+
+        if (!user) {
+            throw new Error(errorNames.NOT_FOUND);
+        }
+
+        const usernameTaken = await User.findOne({ where: { username } });
+        const emailTaken = await User.findOne({ where: { email } });
+
+        if (usernameTaken && username !== ctx.user.username) {
+            throw Error(errorNames.USERNAME_TAKEN);
+        }
+
+        if (emailTaken && email !== ctx.user.email) {
+            throw Error(errorNames.EMAIL_TAKEN);
+        }
+
+        const isOnNewsletterList = await Newsletter.findOne({ where: { email } });
+
+        if (newsletters && !isOnNewsletterList) {
+            await Newsletter.create({ email });
+        } else if (!newsletters && isOnNewsletterList) {
+            await Newsletter.destroy({ where: { email } });
+        }
+
+        return user.update({ username, name, email });
     }
 
     @Mutation(() => UserWithTokenType, { description: "Refreshes auth token" })
